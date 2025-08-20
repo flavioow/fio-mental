@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "steoates.autoimport",
+        "dsznajder.es7-react-js-snippets",
+        "prisma.prisma",
+        "humao.rest-client",
+        "bradlc.vscode-tailwindcss",
+        "formulahendry.auto-rename-tag",
+        "biomejs.biome",
+        "csstools.postcss",
+        "stivo.tailwind-fold"
+    ]
+}
