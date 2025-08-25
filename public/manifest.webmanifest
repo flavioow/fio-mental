@@ -1,0 +1,64 @@
+{
+    "short_name": "Fio Mental",
+    "name": "Fio Mental",
+    "description": "Conecta pessoas, empresas e psicólogos em um ambiente seguro e acessível para cuidar da saúde mental",
+    "start_url": ".",
+    "scope": ".",
+    "id": "/",
+    "theme_color": "#0079CE",
+    "background_color": "#FFFFFF",
+    "lang": "pt-br",
+    "orientation": "portrait",
+    "display": "standalone",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "favicons/icon1.png",
+            "type": "image/png",
+            "sizes": "96x96"
+        },
+        {
+            "src": "favicons/icon0.svg",
+            "type": "image/svg+xml",
+            "sizes": "1514x1514"
+        },
+        {
+            "src": "favicons/favicon.ico",
+            "sizes": "48x48"
+        },
+        {
+            "src": "favicons/apple-icon.png",
+            "type": "image/png",
+            "sizes": "180x180"
+        },
+        {
+            "src": "/favicons/web-app-manifest-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/favicons/web-app-manifest-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "display_override": [
+        "window-controls-overlay",
+        "standalone"
+    ],
+    "categories": [
+        "Saúde mental",
+        "Grátis",
+        "IA",
+        "Psicologia",
+        "Qualidade"
+    ],
+    "protocol_handlers": [
+        {
+            "protocol": "web+fio",
+            "url": "/?url=%s"
+        }
+    ]
+}
