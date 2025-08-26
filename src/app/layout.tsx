@@ -52,7 +52,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="pt-br">
-            <body className={`${josefin.variable} ${inter.className} content-grid`}>
+            <body className={`${josefin.variable} ${inter.className}`}>
                 <Navbar />
                 {children}
             </body>
