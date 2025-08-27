@@ -6,7 +6,7 @@ import { RoleSection } from "./role-section"
 export default function Index() {
     return (
         <main className="content-grid">
-            <section className="content-full-width !my-0 lg:py-48 grid place-items-center bg-[url('https://images.pexels.com/photos/823841/pexels-photo-823841.jpeg?_gl=1*1w7t6ci*_ga*MTM3NjMxNTY4NC4xNzU2MjMzNjYy*_ga_8JE65Q40S6*czE3NTYyMzM2NjEkbzEkZzEkdDE3NTYyMzM3NDEkajU5JGwwJGgw')] bg-bottom bg-cover bg-no-repeat bg-fixed relative">
+            <section className="content-full-width !my-0 py-28 lg:py-48 grid place-items-center bg-[url('https://images.pexels.com/photos/823841/pexels-photo-823841.jpeg?_gl=1*1w7t6ci*_ga*MTM3NjMxNTY4NC4xNzU2MjMzNjYy*_ga_8JE65Q40S6*czE3NTYyMzM2NjEkbzEkZzEkdDE3NTYyMzM3NDEkajU5JGwwJGgw')] bg-bottom bg-cover bg-no-repeat bg-fixed relative">
 
                 {/* Blur */}
                 <div className="content-full-width absolute inset-0 bg-primary/15 backdrop-blur-sm -z-0"></div>

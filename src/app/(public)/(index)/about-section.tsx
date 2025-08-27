@@ -7,7 +7,7 @@ export function AboutSection() {
             <h2 className="font-josefin font-bold text-3xl text-center mb-2">Sobre o FIO Mental</h2>
             <p className="md:text-justify md:indent-8 text-foreground/75">O Mental FIO é um espaço pensado para promover bem-estar e cuidado emocional de forma acessível. Através da nossa plataforma, colaboradores podem conversar com um psicólogo virtual e receber relatórios personalizados, empresas podem oferecer benefícios de saúde mental aos seus times, e psicólogos têm a chance de impactar mais vidas com seu trabalho. Nosso objetivo é facilitar o acesso à escuta, ao apoio e ao autoconhecimento — tudo em um só lugar.</p>
 
-            <div className="my-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div className="my-6 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 mb-16">
                 <Card className="text-center p-6 hover:shadow-lg transition-shadow">
                     <CardContent className="pt-6">
                         <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
