@@ -37,6 +37,6 @@
 }
 
 .content-grid>section:has(+section),
-.content-grid section+section:not(:last-child) {
-    margin-block: 2.5rem;
+.content-grid section+section {
+    margin-block: 6rem;
 }
