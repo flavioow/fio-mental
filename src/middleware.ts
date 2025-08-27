@@ -5,8 +5,8 @@ import {
 } from "next/server"
 
 const routes = [
+    { path: "/", access: "public", whenAuthenticated: "redirect" },
     { path: "/login", access: "public", whenAuthenticated: "redirect" },
-    { path: "/pricing", access: "public" },
 
     { path: "/chat", access: "private", roles: ["employee"] },
     { path: "/reports", access: "private", roles: ["employee"] },
