@@ -22,7 +22,7 @@ export function Navbar() {
 
                         <li id="login">
                             <Button variant="default" className="bg-primary text-primary-foreground">
-                                <a href="#">
+                                <a href="/login">
                                     Login
                                 </a>
                             </Button>

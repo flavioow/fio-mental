@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Inter, Josefin_Sans } from "next/font/google"
 import "./globals.css"
 import "./layout.css"
-import { Navbar } from "@/components/layout/navbar"
 
 const inter = Inter({ subsets: ["latin"] })
 const josefin = Josefin_Sans({ subsets: ["latin"], variable: "--font-josefin" })
@@ -53,7 +52,6 @@ export default function RootLayout({
     return (
         <html lang="pt-br">
             <body className={`${josefin.variable} ${inter.className}`}>
-                <Navbar />
                 {children}
             </body>
         </html>
