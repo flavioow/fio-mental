@@ -10,19 +10,19 @@ import { useState } from "react"
 
 const userTypes = [
     {
-        id: "colaborador",
+        id: "employee",
         title: "Colaborador(a)",
         description: "Quero ser atendido e receber diagnósticos.",
         icon: User,
     },
     {
-        id: "psicologo",
+        id: "psychologist",
         title: "Psicólogo(a)",
         description: "Quero ajudar pacientes a se sentirem melhor.",
         icon: Brain,
     },
     {
-        id: "empresa",
+        id: "company",
         title: "Empresa",
         description: "Quero gerir e acompanhar meu time de colaboradores.",
         icon: Building2,
@@ -30,11 +30,11 @@ const userTypes = [
 ]
 
 export function RoleSection() {
-    const [selectedType, setSelectedType] = useState("colaborador")
+    const [selectedType, setSelectedType] = useState("employee")
     const router = useRouter()
 
     const routerContinue = () => {
-        router.push(`/cadastro/${selectedType}`)
+        router.push(`/register/${selectedType}`)
     }
 
     const routerLogin = () => {
