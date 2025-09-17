@@ -11,13 +11,13 @@ export function Navbar() {
                 <nav>
                     <ul className="flex gap-2">
                         <li id="inicio">
-                            <Button variant="ghost"><a href="#">Início</a></Button>
+                            <Button variant="ghost"><a href="#home">Início</a></Button>
                         </li>
                         <li id="sobre">
-                            <Button variant="ghost"><a href="#">Sobre</a></Button>
+                            <Button variant="ghost"><a href="#about">Sobre</a></Button>
                         </li>
                         <li id="cadastro">
-                            <Button variant="ghost"><a href="#">Cadastro</a></Button>
+                            <Button variant="ghost"><a href="#role">Cadastro</a></Button>
                         </li>
 
                         <li id="login">

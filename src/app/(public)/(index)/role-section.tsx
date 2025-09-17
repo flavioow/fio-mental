@@ -43,7 +43,7 @@ export function RoleSection() {
 
 
     return (
-        <section>
+        <section id="role">
             <h2 className="font-josefin font-bold text-3xl text-center mb-2">Como você deseja continuar?</h2>
             <p className="text-center text-balance text-xl max-w-[600px] mb-12 mx-auto text-foreground/75">Escolha o tipo de cadastro que melhor se adequa ao seu perfil e comece sua jornada no FIO Mental.</p>
 

@@ -1,7 +1,11 @@
+import { LoginForm } from "./login-form"
+
 export default function Login() {
     return (
-        <>
-            <h1 className="text-2xl font-bold">Tela de Login</h1>
-        </>
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                <LoginForm />
+            </div>
+        </div>
     )
 }

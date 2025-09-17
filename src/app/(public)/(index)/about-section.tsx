@@ -26,7 +26,7 @@ const cards = [
 
 export function AboutSection() {
     return (
-        <section>
+        <section id="about">
             <h2 className="font-josefin font-bold text-3xl text-center mb-2">Sobre o FIO Mental</h2>
             <p className="md:text-justify md:indent-8 text-foreground/75">O Mental FIO é um espaço pensado para promover bem-estar e cuidado emocional de forma acessível. Através da nossa plataforma, colaboradores podem conversar com um psicólogo virtual e receber relatórios personalizados, empresas podem oferecer benefícios de saúde mental aos seus times, e psicólogos têm a chance de impactar mais vidas com seu trabalho. Nosso objetivo é facilitar o acesso à escuta, ao apoio e ao autoconhecimento — tudo em um só lugar.</p>
 

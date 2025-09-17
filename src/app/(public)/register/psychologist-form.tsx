@@ -6,17 +6,17 @@ import { MultiStepForm } from "@/components/layout/multi-step"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { maskCPF, maskCRP, maskPhone } from "@/utils/mask"
 
 export function PyschologistForm() {
     const [currentStep, setCurrentStep] = useState(1)
     const [formData, setFormData] = useState({
         // Dados da empresa
-        nomeEmpresa: "",
-        cnpj: "",
+        nome: "",
+        cpf: "",
         telefone: "",
-        endereco: "",
-        numeroFuncionarios: "",
-        setor: "",
+        crp: "",
+        tempoAtuacao: "",
         descricao: "",
         // Login
         email: "",
@@ -39,15 +39,15 @@ export function PyschologistForm() {
 
     const handleSubmit = () => {
         // Aqui você implementaria a lógica de cadastro
-        console.log("Psicólogo empresa:", formData)
+        console.log("Psicólogo:", formData)
         // Redirecionar para dashboard ou página de sucesso
     }
 
     const canGoNext = () => {
         if (currentStep === 1) {
             return (
-                formData.nomeEmpresa.trim() !== "" &&
-                formData.cnpj.trim() !== "" &&
+                formData.nome.trim() !== "" &&
+                formData.cpf.trim() !== "" &&
                 formData.telefone.trim() !== ""
             )
         }
@@ -67,23 +67,23 @@ export function PyschologistForm() {
                 return (
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="nomeEmpresa">Nome da Empresa</Label>
+                            <Label htmlFor="nome">Nome</Label>
                             <Input
-                                id="nomeEmpresa"
-                                value={formData.nomeEmpresa}
-                                onChange={(e) => setFormData({ ...formData, nomeEmpresa: e.target.value })}
-                                placeholder="Nome da sua empresa"
+                                id="nome"
+                                value={formData.nome}
+                                onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                                placeholder="Seu nome"
                                 required
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="cnpj">CNPJ</Label>
+                            <Label htmlFor="cpf">CPF</Label>
                             <Input
-                                id="cnpj"
-                                value={formData.cnpj}
-                                onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
-                                placeholder="XX.XXX.XXX/XXXX-XX"
+                                id="cpf"
+                                value={formData.cpf}
+                                onChange={(e) => setFormData({ ...formData, cpf: maskCPF(e.target.value) })}
+                                placeholder="XXX.XXX.XXX-XX"
                                 required
                             />
                         </div>
@@ -93,49 +93,40 @@ export function PyschologistForm() {
                             <Input
                                 id="telefone"
                                 value={formData.telefone}
-                                onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, telefone: maskPhone(e.target.value) })}
                                 placeholder="(11) 99999-9999"
                                 required
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="endereco">Endereço</Label>
+                            <Label htmlFor="crp">Conselho Regional de Psicologia (CRP)</Label>
                             <Input
-                                id="endereco"
-                                value={formData.endereco}
-                                onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
-                                placeholder="Endereço completo da empresa"
+                                id="crp"
+                                value={formData.crp}
+                                onChange={(e) => setFormData({ ...formData, crp: maskCRP(e.target.value) })}
+                                placeholder="XX/XXXXX"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="numeroFuncionarios">Número de Funcionários</Label>
+                            <Label htmlFor="tempoAtuacao">Tempo de atuação</Label>
                             <Input
-                                id="numeroFuncionarios"
-                                value={formData.numeroFuncionarios}
-                                onChange={(e) => setFormData({ ...formData, numeroFuncionarios: e.target.value })}
-                                placeholder="Ex: 50, 100-500, 1000+"
+                                id="tempoAtuacao"
+                                value={formData.tempoAtuacao}
+                                onChange={(e) => setFormData({ ...formData, tempoAtuacao: e.target.value })}
+                                placeholder="Ex: 1 ano, 2-5 anos, 10+ anos"
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="setor">Setor de Atuação</Label>
-                            <Input
-                                id="setor"
-                                value={formData.setor}
-                                onChange={(e) => setFormData({ ...formData, setor: e.target.value })}
-                                placeholder="Ex: Tecnologia, Saúde, Educação..."
-                            />
-                        </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="descricao">Descrição da Empresa</Label>
+                            <Label htmlFor="descricao">Descrição</Label>
                             <Textarea
                                 id="descricao"
                                 value={formData.descricao}
                                 onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                                placeholder="Descreva brevemente sua empresa..."
+                                placeholder="Descreva brevemente seu trabalho..."
                                 rows={3}
                             />
                         </div>

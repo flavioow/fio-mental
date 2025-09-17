@@ -45,7 +45,7 @@ export function MultiStepForm({
                 {children}
 
                 <div className="flex justify-between pt-4">
-                    <Button variant="outline" onClick={onPrevious} disabled={currentStep === 1}>
+                    <Button variant="outline" onClick={onPrevious}>
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Voltar
                     </Button>
