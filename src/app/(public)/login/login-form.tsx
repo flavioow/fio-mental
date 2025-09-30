@@ -22,7 +22,8 @@ export function LoginForm() {
         // Aqui você implementaria a lógica de login
         console.log("Login:", formData)
         // Redirecionar para dashboard
-    }
+        router.push("/dash-employee")
+}
 
     const handleBack = () => {
         router.push("/")
