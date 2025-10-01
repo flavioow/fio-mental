@@ -23,7 +23,7 @@ export function LoginForm() {
         console.log("Login:", formData)
         // Redirecionar para dashboard
         router.push("/dash-employee")
-}
+    }
 
     const handleBack = () => {
         router.push("/")

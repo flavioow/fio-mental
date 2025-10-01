@@ -14,7 +14,80 @@ datasource db {
 }
 
 model User {
-    id    Int    @id @default(autoincrement())
-    name  String
-    email String @unique
+    id       Int     @id @default(autoincrement())
+    name     String
+    email    String  @unique
+    password String
+    img      String?
+    telefone Int
+
+    role Role
+
+    employee     Employee?
+    company      Company?
+    psychologist Psychologist?
+}
+
+enum Role {
+    EMPLOYEE
+    COMPANY
+    PSYCHOLOGIST
+}
+
+model Employee {
+    id  Int    @id @default(autoincrement())
+    cpf String @unique
+
+    userId Int  @unique
+    user   User @relation(fields: [userId], references: [id])
+
+    questionario   Questionario? @relation(fields: [questionarioId], references: [id])
+    questionarioId Int?
+}
+
+model Company {
+    id       Int     @id @default(autoincrement())
+    cnpj     String  @unique
+    endereco String?
+    setor    String?
+
+    userId Int  @unique
+    user   User @relation(fields: [userId], references: [id])
+}
+
+model Psychologist {
+    id           Int     @id @default(autoincrement())
+    cpf          String  @unique
+    crp          String  @unique
+    tempoAtuacao Int
+    descricao    String?
+
+    userId Int  @unique
+    user   User @relation(fields: [userId], references: [id])
+}
+
+model Questionario {
+    id               Int        @id @default(autoincrement())
+    escalaEstresse   Int
+    motivoEstresse   String?
+    equilibrio       Boolean
+    reacaoProblema   String?
+    espacoBemEstar   Boolean
+    motivacao        String?
+    desmotivacao     String?
+    melhorHorario    String?
+    focoColaborativo Boolean
+    satisfacao       String?
+    pedirAjuda       Boolean
+    conflitos        String?
+    senteOuvido      Boolean
+    ouvido           Int
+    tipoColega       String?
+    ambienteCalmo    Boolean
+    habilidades      String?
+    oportunidades    Boolean
+    confianca        String?
+    palavra          String?
+    mudanca          String?
+    Employee         Employee[]
 }

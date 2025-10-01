@@ -13,6 +13,8 @@ const routes = [
 
     { path: "/chat", access: "private", roles: ["employee"] },
     { path: "/reports", access: "private", roles: ["employee"] },
+    { path: "/quiz", access: "private", roles: ["employee"] },
+    { path: "/dash-employee", access: "private", roles: ["employee"] },
 
     { path: "/dashboard", access: "private", roles: ["company"] },
     { path: "/employees", access: "private", roles: ["company"] },
