@@ -37,10 +37,27 @@ export function PyschologistForm() {
         }
     }
 
-    const handleSubmit = () => {
-        // Aqui você implementaria a lógica de cadastro
-        console.log("Psicólogo:", formData)
-        // Redirecionar para dashboard ou página de sucesso
+    const handleSubmit = async () => {
+        try {
+            const res = await fetch("/api/auth/register/psychologist", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+                credentials: "include",
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                alert(data.error || "Erro no cadastro")
+                return
+            }
+
+            router.push(data.redirectTo || "/dashboard")
+        } catch (err) {
+            console.error(err)
+            alert("Erro inesperado")
+        }
     }
 
     const canGoNext = () => {

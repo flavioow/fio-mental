@@ -6,7 +6,7 @@ import { RoleSection } from "./role-section"
 export default function Index() {
     return (
         <main className="content-grid">
-            <section id="home" className="content-full-width !my-0 min-h-[75dvh] grid place-items-center bg-[url('https://images.pexels.com/photos/823841/pexels-photo-823841.jpeg?_gl=1*1w7t6ci*_ga*MTM3NjMxNTY4NC4xNzU2MjMzNjYy*_ga_8JE65Q40S6*czE3NTYyMzM2NjEkbzEkZzEkdDE3NTYyMzM3NDEkajU5JGwwJGgw')] bg-bottom bg-cover bg-no-repeat bg-fixed relative">
+            <section id="home" className="content-full-width !my-0 min-h-[75dvh] grid place-items-center bg-[url('https://www.clickguarulhos.com.br/wp-content/uploads/2025/01/ColegioEniac.jpg')] bg-bottom bg-cover bg-no-repeat bg-fixed relative">
 
                 {/* Blur */}
                 <div className="content-full-width absolute inset-0 bg-primary/15 backdrop-blur-sm -z-0 h-full"></div>
