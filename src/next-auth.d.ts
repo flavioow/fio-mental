@@ -1,23 +1,24 @@
-// types/next-auth.d.ts
-import { DefaultSession, NextAuth } from "next-auth"
+import "next-auth"
 
 declare module "next-auth" {
-    // Torne role opcional aqui para não conflitar com o AdapterUser
     interface User {
-        id?: string
-        role?: string
+        role: string
     }
 
     interface Session {
-        user: DefaultSession["user"] & {
-            id?: string
-            role?: string
+        user: {
+            id: string
+            name?: string | null
+            email?: string | null
+            image?: string | null
+            role: string
         }
     }
 }
 
 declare module "next-auth/jwt" {
     interface JWT {
-        role?: string
+        role: string
+        id: string
     }
 }

@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,35 +10,38 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 
 export function LoginForm() {
+    const router = useRouter()
     const [formData, setFormData] = useState({ email: "", password: "" })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
-    const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError("")
 
-        const res = await signIn("credentials", {
-            redirect: false, // não faz redirect automático
-            email: formData.email,
-            password: formData.password,
-        })
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            })
 
-        setLoading(false)
+            const data = await res.json()
 
-        if (res?.error) {
-            setError("E-mail ou senha inválidos")
-        } else {
-            // redireciona conforme role
-            const session = await fetch("/api/auth/session").then(r => r.json())
-            const role = session?.user?.role
+            if (!res.ok) {
+                setError(data.error || "Erro ao fazer login")
+                setLoading(false)
+                return
+            }
 
-            if (role === "employee") router.push("/chat")
-            else if (role === "company") router.push("/dashboard")
-            else if (role === "psychologist") router.push("/dash-psychologist")
-            else router.push("/")
+            // Redireciona para a rota retornada pela API
+            window.location.href = data.redirectTo
+
+        } catch (err) {
+            console.error("Login error:", err)
+            setError("Erro ao fazer login. Tente novamente.")
+            setLoading(false)
         }
     }
 
@@ -64,6 +66,7 @@ export function LoginForm() {
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             placeholder="seu@email.com"
                             required
+                            disabled={loading}
                         />
                     </div>
 
@@ -76,17 +79,26 @@ export function LoginForm() {
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             placeholder="Digite sua senha"
                             required
+                            disabled={loading}
                         />
                     </div>
 
-                    {error && <p className="text-red-500">{error}</p>}
+                    {error && (
+                        <div className="text-sm text-red-500 bg-red-50 p-3 rounded border border-red-200">
+                            {error}
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-[1fr_3fr] gap-4 pt-4">
-                        <Button variant="outline" onClick={handleBack}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleBack}
+                            disabled={loading}
+                        >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Voltar
                         </Button>
-
                         <Button type="submit" disabled={!canSubmit}>
                             {loading ? "Entrando..." : "Entrar"}
                         </Button>
