@@ -35,10 +35,29 @@ export function CompanyForm() {
         }
     }
 
-    const handleSubmit = () => {
-        // Aqui você implementaria a lógica de cadastro
-        console.log("Cadastro empresa:", formData)
-        // Redirecionar para dashboard ou página de sucesso
+    const handleSubmit = async () => {
+        try {
+            const res = await fetch("/api/auth/register/company", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+                credentials: "include", // importante para cookies
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                // Mostra mensagem de erro na tela (pode ser vermelho)
+                alert(data.error || "Erro no cadastro")
+                return
+            }
+
+            // Redireciona baseado no retorno da API
+            router.push(data.redirectTo || "/dashboard")
+        } catch (err) {
+            console.error(err)
+            alert("Erro inesperado")
+        }
     }
 
     const canGoNext = () => {

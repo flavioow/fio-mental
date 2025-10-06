@@ -42,25 +42,28 @@ export function MultiStepForm({
                 </p>
             </CardHeader>
             <CardContent className="space-y-6">
-                {children}
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        if (isLastStep) onSubmit()
+                        else onNext()
+                    }}
+                    className="space-y-6"
+                >
+                    {children}
 
-                <div className="flex justify-between pt-4">
-                    <Button variant="outline" onClick={onPrevious}>
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Voltar
-                    </Button>
+                    <div className="flex justify-between pt-4">
+                        <Button variant="outline" type="button" onClick={onPrevious}>
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Voltar
+                        </Button>
 
-                    {isLastStep ? (
-                        <Button onClick={onSubmit} disabled={!canGoNext}>
-                            Finalizar Cadastro
+                        <Button type="submit" disabled={!canGoNext}>
+                            {isLastStep ? "Finalizar Cadastro" : "Próximo"}
+                            {!isLastStep && <ArrowRight className="w-4 h-4 ml-2" />}
                         </Button>
-                    ) : (
-                        <Button onClick={onNext} disabled={!canGoNext}>
-                            Próximo
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                    )}
-                </div>
+                    </div>
+                </form>
             </CardContent>
         </Card>
     )

@@ -11,19 +11,19 @@ const routes = [
     { path: "/register/company", access: "public", whenAuthenticated: "redirect" },
     { path: "/register/psychologist", access: "public", whenAuthenticated: "redirect" },
 
-    { path: "/chat", access: "private", roles: ["employee"] },
-    { path: "/reports", access: "private", roles: ["employee"] },
-    { path: "/quiz", access: "private", roles: ["employee"] },
-    { path: "/dash-employee", access: "private", roles: ["employee"] },
+    { path: "/chat", access: "private", roles: ["EMPLOYEE"] },
+    { path: "/reports", access: "private", roles: ["EMPLOYEE"] },
+    { path: "/quiz", access: "private", roles: ["EMPLOYEE"] },
+    { path: "/dash-employee", access: "private", roles: ["EMPLOYEE"] },
 
-    { path: "/dashboard", access: "private", roles: ["company"] },
-    { path: "/employees", access: "private", roles: ["company"] },
+    { path: "/dashboard", access: "private", roles: ["COMPANY"] },
+    { path: "/employees", access: "private", roles: ["COMPANY"] },
 ] as const
 
 const defaultRoutes = [
     { role: "", redirect: "/" },
-    { role: "employee", redirect: "/chat" },
-    { role: "company", redirect: "/dashboard" },
+    { role: "EMPLOYEE", redirect: "/chat" },
+    { role: "COMPANY", redirect: "/dashboard" },
 ] as const
 
 export function middleware(request: NextRequest) {
