@@ -18,6 +18,9 @@ const routes = [
 
     { path: "/dashboard", access: "private", roles: ["COMPANY"] },
     { path: "/employees", access: "private", roles: ["COMPANY"] },
+
+    { path: "/patients", access: "private", roles: ["PSYCHOLOGIST"] },
+    { path: "/patients/*", access: "private", roles: ["PSYCHOLOGIST"] },
 ] as const
 
 const defaultRoutes = [
