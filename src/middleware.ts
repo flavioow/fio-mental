@@ -5,7 +5,7 @@ import {
 } from "next/server"
 
 const routes = [
-    { path: "/", access: "public", whenAuthenticated: "redirect" },
+    { path: "/", access: "public" },
     { path: "/login", access: "public", whenAuthenticated: "redirect" },
     { path: "/register/employee", access: "public", whenAuthenticated: "redirect" },
     { path: "/register/company", access: "public", whenAuthenticated: "redirect" },
@@ -24,6 +24,7 @@ const defaultRoutes = [
     { role: "", redirect: "/" },
     { role: "EMPLOYEE", redirect: "/chat" },
     { role: "COMPANY", redirect: "/dashboard" },
+    { role: "PSYCHOLOGIST", redirect: "/dash-psychologist" },
 ] as const
 
 export function middleware(request: NextRequest) {
