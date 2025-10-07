@@ -12,11 +12,11 @@ interface CompletionPieChartProps {
 const chartConfig = {
     concluidos: {
         label: "Concluídos",
-        color: "var(--success)",
+        color: "var(--primary)",
     },
     pendentes: {
         label: "Pendentes",
-        color: "color-mix(in oklch, var(--muted-foreground), transparent 50%)",
+        color: "color-mix(in oklch, var(--primary), transparent 50%)",
     },
 }
 

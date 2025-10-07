@@ -42,12 +42,12 @@ export function CompletionChart() {
                             <ChartTooltip content={<ChartTooltipContent />} />
                             <Area
                                 type="monotone"
-                                fill="var(--success)"
+                                fill="var(--primary)"
                                 fillOpacity={0.25}
                                 dataKey="conclusoes"
-                                stroke="var(--success)"
+                                stroke="var(--primary)"
                                 strokeWidth={2}
-                                dot={{ fill: "var(--success)", r: 4 }}
+                                dot={{ fill: "var(--primary)", r: 4 }}
                                 activeDot={{ r: 6 }}
                             />
                         </AreaChart>
