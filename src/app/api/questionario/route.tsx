@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
         // Monta prompt para Gemini
         const prompt = `
-Gere um perfil psicológico do funcionário em JSON com campos:
+Gere um perfil psicológico resumido (entre 5 a 7 linhas) do funcionário em JSON com campos:
 {
   "perfilPrincipal": "...",
   "diagnostico": "...",
@@ -84,8 +84,6 @@ Perfis possíveis:
 7. Equilibrado: Nível saudável de estresse, boa organização
 8. Ansioso no trabalho: Expectativas elevadas, preocupação constante
 9. Confiante/Autônomo: Boa autoeficácia, lida bem com pressões
-
-Resuma o relatório para algo entre 6 a 7 linhas
 `
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
