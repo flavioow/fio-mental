@@ -11,6 +11,11 @@ export async function POST(req: Request) {
         // 1. Pegar o token JWT dos cookies
         const cookieStore = await cookies()
         const token = cookieStore.get("token")?.value
+        // const token = jwt.sign(
+        //     { id: 999, role: "EMPLOYEE" },
+        //     process.env.JWT_SECRET!,
+        //     { expiresIn: "7d" }
+        // )
 
         if (!token) {
             return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
