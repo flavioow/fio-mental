@@ -60,25 +60,28 @@ model Questionario {
     id               Int     @id @default(autoincrement())
     escalaEstresse   Int
     motivoEstresse   String?
-    equilibrio       Boolean
+    equilibrio       String?
     reacaoProblema   String?
-    espacoBemEstar   Boolean
+    espacoBemEstar   String?
     motivacao        String?
     desmotivacao     String?
     melhorHorario    String?
-    focoColaborativo Boolean
+    focoColaborativo String?
     satisfacao       String?
-    pedirAjuda       Boolean
+    pedirAjuda       String?
     conflitos        String?
-    senteOuvido      Boolean
+    senteOuvido      String?
     ouvido           Int?
     tipoColega       String?
-    ambienteCalmo    Boolean
+    ambienteCalmo    String?
     habilidades      String?
-    oportunidades    Boolean
+    oportunidades    String?
     confianca        String?
     palavra          String?
     mudanca          String?
+
+    // NOVO CAMPO 👇
+    perfilPsicologico String? // Resultado da IA em JSON ou texto
 
     employeeId Int      @unique
     employee   Employee @relation(fields: [employeeId], references: [id])

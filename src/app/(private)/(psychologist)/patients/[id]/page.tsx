@@ -14,7 +14,7 @@ const pacientesData: Record<string, any> = {
         nome: "Kevin Simões de Souza Lima",
         email: "kevin.simoes@fiomental.com",
         telefone: "(11) 98765-4321",
-        dataNascimento: "15/03/1990",
+        dataNascimento: "15/03/2008",
         resultado: "Alegre",
         status: "completed",
         sessoes: 8,
@@ -33,7 +33,7 @@ const pacientesData: Record<string, any> = {
         nome: "Cauã Rodrigues dos Santos",
         email: "caua.rodrigues@ecommerce.com",
         telefone: "(11) 98765-1234",
-        dataNascimento: "22/07/1985",
+        dataNascimento: "22/07/2008",
         resultado: "Estressado",
         status: "in-progress",
         sessoes: 4,
@@ -75,13 +75,13 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
         switch (status) {
             case "completed":
                 return (
-                    <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+                    <Badge variant="default" className="bg-success">
                         Concluído
                     </Badge>
                 )
             case "in-progress":
                 return (
-                    <Badge variant="default" className="bg-blue-500 hover:bg-blue-600">
+                    <Badge variant="default" className="bg-primary">
                         Em Andamento
                     </Badge>
                 )

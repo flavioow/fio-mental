@@ -33,41 +33,31 @@ export default function RefazerQuestionario() {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Monta o prompt para IA
-        const prompt = `
-Saúde Mental e Bem-Estar
-- Nível de estresse: ${form.estresse}
-- Motivo do estresse: ${form.motivoEstresse}
-- Equilíbrio trabalho/vida: ${form.equilibrio}
-- Primeira reação a problemas: ${form.reacaoProblema}
-- Espaço para falar sobre bem-estar: ${form.espacoBemEstar}
 
-Motivação e Produtividade
-- Motivação: ${form.motivacao}
-- Desmotivação: ${form.desmotivacao}
-- Melhor horário: ${form.melhorHorario}
-- Foco: ${form.foco}
-- Satisfação/motivação: ${form.satisfacao}
+        try {
+            const res = await fetch("/api/questionario", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            })
 
-Relacionamento e Trabalho em Equipe
-- Pedir ajuda: ${form.pedirAjuda}
-- Conflitos: ${form.conflitos}
-- Ouvido/respeitado: ${form.ouvido}
-- Tipo de colega/líder: ${form.tipoColega}
-- Ambiente preferido: ${form.ambiente}
+            const data = await res.json()
 
-Desenvolvimento e Futuro
-- Habilidades para desenvolver: ${form.habilidades}
-- Oportunidades de crescimento: ${form.oportunidades}
-- Confiança para novas responsabilidades: ${form.confianca}
-- Palavra sobre relação com trabalho: ${form.palavra}
-- Mudança para bem-estar: ${form.mudanca}
-        `
-        // Aqui você pode enviar o prompt para sua IA ou API
-        console.log(prompt)
-        router.push("/dash-employee")
+            if (!res.ok) {
+                alert(data.error || "Erro ao salvar questionário")
+                return
+            }
+
+            // Salva apenas temporariamente pra exibir na página de resultado
+            localStorage.setItem("perfilIA", data.perfil)
+
+            router.push("/result")
+        } catch (error) {
+            console.error("Erro:", error)
+            alert("Erro ao enviar questionário")
+        }
     }
 
     return (

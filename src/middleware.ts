@@ -11,21 +11,23 @@ const routes = [
     { path: "/register/company", access: "public", whenAuthenticated: "redirect" },
     { path: "/register/psychologist", access: "public", whenAuthenticated: "redirect" },
 
+    { path: "/dash-employee", access: "private", roles: ["EMPLOYEE"] },
     { path: "/chat", access: "private", roles: ["EMPLOYEE"] },
     { path: "/reports", access: "private", roles: ["EMPLOYEE"] },
     { path: "/quiz", access: "private", roles: ["EMPLOYEE"] },
-    { path: "/dash-employee", access: "private", roles: ["EMPLOYEE"] },
 
     { path: "/dashboard", access: "private", roles: ["COMPANY"] },
     { path: "/employees", access: "private", roles: ["COMPANY"] },
 
     { path: "/patients", access: "private", roles: ["PSYCHOLOGIST"] },
     { path: "/patients/*", access: "private", roles: ["PSYCHOLOGIST"] },
+    { path: "/reports-psychologist", access: "private", roles: ["PSYCHOLOGIST"] },
+    { path: "/dash-psychologist", access: "private", roles: ["PSYCHOLOGIST"] },
 ] as const
 
 const defaultRoutes = [
     { role: "", redirect: "/" },
-    { role: "EMPLOYEE", redirect: "/chat" },
+    { role: "EMPLOYEE", redirect: "/dash-employee" },
     { role: "COMPANY", redirect: "/dashboard" },
     { role: "PSYCHOLOGIST", redirect: "/dash-psychologist" },
 ] as const
