@@ -36,20 +36,20 @@ export async function POST(req: Request) {
         )
 
         // Define rota de redirecionamento baseada no role
-        // let redirectTo = "/"
-        // if (user.role === "EMPLOYEE") {
-        //     redirectTo = "/chat"
-        // } else if (user.role === "COMPANY") {
-        //     redirectTo = "/dashboard"
-        // } else if (user.role === "PSYCHOLOGIST") {
-        //     redirectTo = "/dash-psychologist"
-        // }
+        let redirectTo = "/"
+        if (user.role === "EMPLOYEE") {
+            redirectTo = "/dash-employee"
+        } else if (user.role === "COMPANY") {
+            redirectTo = "/dashboard"
+        } else if (user.role === "PSYCHOLOGIST") {
+            redirectTo = "/dash-psychologist"
+        }
 
         // Retorna resposta
         const res = NextResponse.json({
             success: true,
             message: "Login realizado com sucesso",
-            // redirectTo,
+            redirectTo,
             user: {
                 id: user.id,
                 name: user.name,

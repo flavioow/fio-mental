@@ -2,35 +2,39 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import jwt from "jsonwebtoken"
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import { cookies } from "next/headers"
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 export async function POST(req: Request) {
     try {
         // 1. Pegar o token JWT dos cookies
-        const token = req.cookies.get("token")?.value
+        const cookieStore = await cookies()
+        const token = cookieStore.get("token")?.value
 
         if (!token) {
             return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
         }
 
-        // 2. Decodificar o token para pegar o userId
+        // 2. Decodificar o token para pegar o userId e role
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number, role: string }
 
-        if (decoded.role !== "EMPLOYEE") {
+        // 3. Verificar se é EMPLOYEE ou PSYCHOLOGIST (apenas para testes)
+        if (!["EMPLOYEE", "PSYCHOLOGIST"].includes(decoded.role.toUpperCase())) {
             return NextResponse.json({ error: "Apenas funcionários podem responder" }, { status: 403 })
         }
 
-        // 3. Buscar o employee pelo userId
-        const employee = await prisma.employee.findUnique({
-            where: { userId: decoded.id }
-        })
+        // 4. Buscar o usuário no banco
+        const employee = await prisma.employee.findUnique({ where: { userId: decoded.id } })
+        const psychologist = await prisma.psychologist.findUnique({ where: { userId: decoded.id } })
 
-        if (!employee) {
-            return NextResponse.json({ error: "Funcionário não encontrado" }, { status: 404 })
+        // 5. Determinar qual usuário usar
+        const user = employee || psychologist
+        if (!user) {
+            return NextResponse.json({ error: "Usuário não encontrado" }, { status: 404 })
         }
 
-        // 4. Receber os dados do formulário
+        // 6. Receber os dados do formulário
         const body = await req.json()
         const {
             estresse,
@@ -55,7 +59,7 @@ export async function POST(req: Request) {
             mudanca,
         } = body
 
-        // 5. Montar o prompt para a IA
+        // 7. Montar o prompt para a IA
         const prompt = `
 Com base nas respostas abaixo, gere um perfil psicológico objetivo e estruturado em JSON com os seguintes campos:
 {
@@ -105,14 +109,14 @@ Perfis possíveis:
 9. Confiante/Autônomo: Boa autoeficácia, lida bem com pressões
 `
 
-        // 6. Chamar a IA Gemini
+        // 8. Chamar a IA Gemini
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
         const result = await model.generateContent(prompt)
         const perfilGerado = result?.response?.text() || "Erro ao gerar perfil"
 
-        // 7. Salvar no banco (cria ou atualiza)
+        // 9. Salvar no banco (cria ou atualiza)
         const questionario = await prisma.questionario.upsert({
-            where: { employeeId: employee.id },
+            where: { employeeId: user.id }, // funciona para ambos papéis
             update: {
                 escalaEstresse: parseInt(estresse),
                 motivoEstresse,
@@ -134,10 +138,10 @@ Perfis possíveis:
                 confianca,
                 palavra,
                 mudanca,
-                perfilPsicologico: perfilGerado, // Salva o resultado da IA
+                perfilPsicologico: perfilGerado,
             },
             create: {
-                employeeId: employee.id,
+                employeeId: user.id,
                 escalaEstresse: parseInt(estresse),
                 motivoEstresse,
                 equilibrio,
@@ -162,12 +166,12 @@ Perfis possíveis:
             },
         })
 
-        // 8. Retornar sucesso
+        // 10. Retornar sucesso
         return NextResponse.json({
             success: true,
             message: "Questionário salvo com sucesso!",
             perfil: perfilGerado,
-            questionarioId: questionario.id
+            questionarioId: questionario.id,
         })
 
     } catch (error) {
