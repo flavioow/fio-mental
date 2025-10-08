@@ -37,22 +37,20 @@ export default function RefazerQuestionario() {
         e.preventDefault()
 
         try {
+            const perfilPsico = { ...form } // encapsula todos os campos do form
             const res = await fetch("/api/questionario", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: JSON.stringify(form), // <-- aqui!
             })
 
             const data = await res.json()
-
             if (!res.ok) {
                 alert(data.error || "Erro ao salvar questionário")
                 return
             }
 
-            // Salva apenas temporariamente pra exibir na página de resultado
             localStorage.setItem("perfilIA", data.perfil)
-
             router.push("/result")
         } catch (error) {
             console.error("Erro:", error)

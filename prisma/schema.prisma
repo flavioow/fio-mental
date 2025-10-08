@@ -58,7 +58,7 @@ model Psychologist {
 
 model Questionario {
     id               Int     @id @default(autoincrement())
-    escalaEstresse   Int
+    escalaEstresse   Int?
     motivoEstresse   String?
     equilibrio       String?
     reacaoProblema   String?
@@ -71,7 +71,7 @@ model Questionario {
     pedirAjuda       String?
     conflitos        String?
     senteOuvido      String?
-    ouvido           Int?
+    ouvido           String?
     tipoColega       String?
     ambienteCalmo    String?
     habilidades      String?
