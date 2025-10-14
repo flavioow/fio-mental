@@ -82,7 +82,20 @@ export async function POST(req: Request) {
         // Hash da senha
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        // Cria usuário + employee
+        // Busca o ID da empresa do usuário logado
+        const companyUser = await prisma.user.findUnique({
+            where: { id: decoded.id },
+            include: { company: true }
+        })
+
+        if (!companyUser?.company) {
+            return NextResponse.json(
+                { error: "Empresa não encontrada" },
+                { status: 404 }
+            )
+        }
+
+        // Cria usuário + employee vinculado à empresa
         const user = await prisma.user.create({
             data: {
                 name: nome,
@@ -92,7 +105,8 @@ export async function POST(req: Request) {
                 role: "EMPLOYEE",
                 employee: {
                     create: {
-                        cpf
+                        cpf,
+                        companyId: companyUser.company.id
                     }
                 }
             },

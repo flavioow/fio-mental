@@ -31,6 +31,10 @@ model Employee {
     userId Int    @unique
     user   User   @relation(fields: [userId], references: [id])
 
+    // Relacionamento com a empresa
+    companyId Int
+    company   Company @relation(fields: [companyId], references: [id])
+
     questionario Questionario?
 }
 
@@ -43,6 +47,9 @@ model Company {
 
     userId Int  @unique
     user   User @relation(fields: [userId], references: [id])
+
+    // Relacionamento com funcionários
+    employees Employee[]
 }
 
 model Psychologist {
@@ -57,7 +64,8 @@ model Psychologist {
 }
 
 model Questionario {
-    id               Int     @id @default(autoincrement())
+    id               Int      @id @default(autoincrement())
+    createdAt        DateTime @default(now())
     escalaEstresse   Int?
     motivoEstresse   String?
     equilibrio       String?
@@ -80,8 +88,7 @@ model Questionario {
     palavra          String?
     mudanca          String?
 
-    // NOVO CAMPO 👇
-    perfilPsicologico String? // Resultado da IA em JSON ou texto
+    perfilPsicologico String?
 
     employeeId Int      @unique
     employee   Employee @relation(fields: [employeeId], references: [id])

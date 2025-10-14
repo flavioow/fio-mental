@@ -4,19 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { XAxis, YAxis, CartesianGrid, ResponsiveContainer, AreaChart, Area } from "recharts"
 
-// Dados mockados: conclusões ao longo do tempo
-const data = [
-    { mes: "Jan", conclusoes: 2 },
-    { mes: "Fev", conclusoes: 3 },
-    { mes: "Mar", conclusoes: 5 },
-    { mes: "Abr", conclusoes: 4 },
-    { mes: "Mai", conclusoes: 6 },
-    { mes: "Jun", conclusoes: 8 },
-    { mes: "Jul", conclusoes: 7 },
-    { mes: "Ago", conclusoes: 3 },
-    { mes: "Set", conclusoes: 5 },
-    { mes: "Out", conclusoes: 2 },
-]
+interface CompletionChartProps {
+    data: Array<{ mes: string; conclusoes: number }>
+}
 
 const chartConfig = {
     conclusoes: {
@@ -25,7 +15,7 @@ const chartConfig = {
     },
 }
 
-export function CompletionChart() {
+export function CompletionChart({ data }: CompletionChartProps) {
     return (
         <Card>
             <CardHeader>
