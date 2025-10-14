@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         // Define rota de redirecionamento baseada no role
         let redirectTo = "/"
         if (user.role === "EMPLOYEE") {
-            redirectTo = "/chat"
+            redirectTo = "/dash-employee"
         } else if (user.role === "COMPANY") {
             redirectTo = "/dashboard"
         } else if (user.role === "PSYCHOLOGIST") {

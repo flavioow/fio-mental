@@ -10,7 +10,7 @@ interface Dia {
     mes: string;
 }
 
-export default function Reports() {
+export default function Agendamento() {
     const dias: Dia[] = [
         { dia: "08", mes: "Outubro" },
         { dia: "09", mes: "Outubro" },
@@ -54,7 +54,8 @@ export default function Reports() {
         5: { psic1: [1, 5, 9], psic2: [0, 6] },
     };
 
-    const marcacoes = marcacoesPorDia[diaAtivo] || { psic1: [], psic2: [] }
+    const marcacoes = marcacoesPorDia[diaAtivo] || { psic1: [], psic2: [] };
+
     return (
         <div className="flex flex-col items-center py-8">
             <div className="w-full max-w-5xl px-6">
@@ -62,7 +63,7 @@ export default function Reports() {
                 {/* Cabeçalho */}
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-2">
-                        <a href="/dash-employee/" className="text-foreground hover:opacity-75">
+                        <a href="/dash-psychologist/" className="text-foreground hover:opacity-75">
                             <ArrowLeft size={22} />
                         </a>
                         <h1 className="text-2xl font-bold">Outubro 2025</h1>
