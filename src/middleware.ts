@@ -7,7 +7,7 @@ import {
 const routes = [
     { path: "/", access: "public" },
     { path: "/login", access: "public", whenAuthenticated: "redirect" },
-    { path: "/register/employee", access: "public", whenAuthenticated: "redirect" },
+    { path: "/register/employee", access: "public" },
     { path: "/register/company", access: "public", whenAuthenticated: "redirect" },
     { path: "/register/psychologist", access: "public", whenAuthenticated: "redirect" },
 

@@ -106,9 +106,9 @@ export default function PerfilPsicologico() {
                     <Card className="p-6 shadow-lg !w-full">
                         <div className="flex items-start gap-4">
                             <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-3">
+                                <div className="mb-3">
                                     <h2 className="text-2xl font-bold">Resultado da Avaliação</h2>
-                                    <Badge className="bg-primary text-primary-foreground px-3 py-1">
+                                    <Badge className="bg-primary text-primary-foreground mt-3 px-3 py-1 break-normal whitespace-normal">
                                         {perfilIA.perfilPrincipal}
                                     </Badge>
                                 </div>

@@ -23,23 +23,23 @@ export type ReportType =
 
 // Dados mockados para demonstração
 const agendamentos = [
-    { id: 1, paciente: "Ana Silva", data: "2025-10-06", horario: "09:00", tipo: "Primeira Consulta" },
-    { id: 2, paciente: "Carlos Santos", data: "2025-10-06", horario: "10:30", tipo: "Retorno" },
-    { id: 3, paciente: "Beatriz Lima", data: "2025-10-07", horario: "14:00", tipo: "Retorno" },
-    { id: 4, paciente: "Diego Oliveira", data: "2025-10-07", horario: "11:00", tipo: "Primeira Consulta" },
-    { id: 5, paciente: "Eduarda Costa", data: "2025-10-08", horario: "13:30", tipo: "Retorno" },
-    { id: 6, paciente: "Felipe Alves", data: "2025-10-09", horario: "09:30", tipo: "Retorno" },
+    { id: 1, paciente: "Lewis Hamilton", data: "2025-10-06", horario: "09:00", tipo: "Primeira Consulta" },
+    { id: 2, paciente: "Carlos Sains", data: "2025-10-06", horario: "10:30", tipo: "Retorno" },
+    { id: 3, paciente: "Alexander Albon", data: "2025-10-07", horario: "14:00", tipo: "Retorno" },
+    { id: 4, paciente: "Max Verstappen", data: "2025-10-07", horario: "11:00", tipo: "Primeira Consulta" },
+    { id: 5, paciente: "Gabriel Bortoleto", data: "2025-10-08", horario: "13:30", tipo: "Retorno" },
+    { id: 6, paciente: "Charles Leclerc", data: "2025-10-09", horario: "09:30", tipo: "Retorno" },
 ]
 
 const pacientes = [
-    { id: 1, nome: "Ana Silva", email: "ana.silva@email.com", resultado: "engajado" as ReportType },
-    { id: 2, nome: "Carlos Santos", email: "carlos.santos@email.com", resultado: "estressado" as ReportType },
-    { id: 3, nome: "Beatriz Lima", email: "beatriz.lima@email.com", resultado: "equilibrado" as ReportType },
-    { id: 4, nome: "Diego Oliveira", email: "diego.oliveira@email.com", resultado: "ansioso" as ReportType },
-    { id: 5, nome: "Eduarda Costa", email: "eduarda.costa@email.com", resultado: "motivado" as ReportType },
-    { id: 6, nome: "Felipe Alves", email: "felipe.alves@email.com", resultado: "burnout" as ReportType },
-    { id: 7, nome: "Gabriela Rocha", email: "gabriela.rocha@email.com", resultado: "resiliente" as ReportType },
-    { id: 8, nome: "Henrique Martins", email: "henrique.martins@email.com", resultado: "confiante" as ReportType },
+    { id: 1, nome: "Lewis Hamilton", email: "lewislove.rascoe@email.com", resultado: "engajado" as ReportType },
+    { id: 2, nome: "Carlos Sains", email: "carlossains@email.com", resultado: "estressado" as ReportType },
+    { id: 3, nome: "Alexander Albon", email: "albon.tai@email.com", resultado: "equilibrado" as ReportType },
+    { id: 4, nome: "Max Verstappen", email: "tututudu.max.verstappen@email.com", resultado: "ansioso" as ReportType },
+    { id: 5, nome: "Gabriel Bortoleto", email: "omaiordahistoria@email.com", resultado: "motivado" as ReportType },
+    { id: 6, nome: "Charles Leclerc", email: "ihateferrari@email.com", resultado: "burnout" as ReportType },
+    { id: 7, nome: "Nico Hulkenberg", email: "i-got-my-first-podium-in-this-year@email.com", resultado: "resiliente" as ReportType },
+    { id: 8, nome: "Andrea Kimi Antonelli", email: "fratelli.d.ilatia@email.com", resultado: "confiante" as ReportType },
     { id: 9, nome: "Flávio Henrique Perusin de Souza", email: "flavio.perusin@fiomental.com", resultado: "desmotivado" as ReportType },
 ]
 
@@ -121,7 +121,7 @@ export default function DashboardPsicologo() {
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground">Boa tarde, Gustavo B.</h1>
+                        <h1 className="text-3xl font-bold text-foreground">Boa tarde, Naiane</h1>
                         <p className="text-muted-foreground mt-1">Gerencie suas consultas e acompanhe seus pacientes</p>
                     </div>
                 </div>

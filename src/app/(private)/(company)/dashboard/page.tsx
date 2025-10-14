@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { MoreVertical, Pencil, Trash2, UserPlus } from "lucide-react"
 import { CompletionChart } from "./completion-chart"
 import { CompletionPieChart } from "./completion-pie-chart"
+import Link from "next/link"
 
 // Dados mockados para demonstração
 const initialColaboradores = [
@@ -45,10 +46,12 @@ export default function DashboardEmpresa() {
                             <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
                             <p className="text-muted-foreground mt-1">Gerencie seus colaboradores e acompanhe o progresso</p>
                         </div>
-                        <Button className="gap-2">
-                            <UserPlus className="h-4 w-4" />
-                            Adicionar Colaborador
-                        </Button>
+                        <Link href="/register/employee" className="cursor-pointer">
+                            <Button className="gap-2">
+                                <UserPlus className="h-4 w-4" />
+                                Adicionar Colaborador
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
