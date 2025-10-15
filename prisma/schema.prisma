@@ -7,6 +7,9 @@ datasource db {
     url      = "file:./dev.db"
 }
 
+//
+// Modelos Principais
+//
 model User {
     id       Int     @id @default(autoincrement())
     name     String
@@ -35,7 +38,9 @@ model Employee {
     companyId Int
     company   Company @relation(fields: [companyId], references: [id])
 
+    // Relacionamento com questionário e consultas
     questionario Questionario?
+    appointments Appointment[]
 }
 
 model Company {
@@ -48,7 +53,7 @@ model Company {
     userId Int  @unique
     user   User @relation(fields: [userId], references: [id])
 
-    // Relacionamentos
+    // Relacionamento com funcionários e psicólogos
     employees     Employee[]
     psychologists Psychologist[]
 }
@@ -66,6 +71,10 @@ model Psychologist {
     // Relacionamento com a empresa
     companyId Int
     company   Company @relation(fields: [companyId], references: [id])
+
+    // Relacionamento com disponibilidade e agendamentos
+    availability PsychologistAvailability[]
+    appointments Appointment[]
 }
 
 model Questionario {
@@ -97,6 +106,41 @@ model Questionario {
 
     employeeId Int      @unique
     employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+//
+// Modelos de Agendamento e Disponibilidade
+//
+model PsychologistAvailability {
+    id             Int          @id @default(autoincrement())
+    dayOfWeek      Int // 0 = Domingo ... 6 = Sábado
+    startTime      String // Ex: "09:00"
+    endTime        String // Ex: "18:00"
+    psychologistId Int
+    psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+
+    @@unique([psychologistId, dayOfWeek, startTime, endTime])
+    @@index([psychologistId])
+}
+
+model Appointment {
+    id        Int               @id @default(autoincrement())
+    date      DateTime // Data específica do agendamento
+    startTime String // Ex: "09:00"
+    endTime   String // Ex: "09:30"
+    status    AppointmentStatus @default(SCHEDULED)
+    notes     String?
+    createdAt DateTime          @default(now())
+
+    psychologistId Int
+    psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+
+    employeeId Int
+    employee   Employee @relation(fields: [employeeId], references: [id])
+
+    @@unique([psychologistId, date, startTime, endTime])
+    @@index([psychologistId])
+    @@index([employeeId])
 }
 
 //
@@ -138,8 +182,17 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+//
+// Enums
+//
 enum Role {
     EMPLOYEE
     COMPANY
     PSYCHOLOGIST
+}
+
+enum AppointmentStatus {
+    SCHEDULED
+    COMPLETED
+    CANCELLED
 }

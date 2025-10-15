@@ -45,24 +45,32 @@ export async function POST(req: Request) {
 
         // Monta prompt para Gemini
         const prompt = `
-Gere um perfil psicológico resumido (entre 5 a 7 linhas) do funcionário em JSON com campos:
+Você é um assistente especializado em análise psicológica organizacional.
+Com base nas respostas abaixo, gere um PERFIL PSICOLÓGICO resumido do funcionário.
+
+Sua resposta **DEVE SER ESTRITAMENTE UM JSON VÁLIDO**, no formato:
+
 {
   "tipo": "engajado",
-  "perfilPrincipal": "...",
-  "diagnostico": "...",
-  "recomendacoes": ["...", "..."]
+  "perfilPrincipal": "descrição breve do perfil psicológico (1 a 2 linhas)",
+  "diagnostico": "resumo interpretativo de 3 a 5 linhas sobre o estado emocional e comportamental do funcionário",
+  "recomendacoes": ["ação prática 1", "ação prática 2", "ação prática 3"]
 }
 
-IMPORTANTE: O campo "tipo" deve ser EXATAMENTE uma dessas opções (em minúsculo):
-- engajado
-- motivado
-- resiliente
-- estressado
-- burnout
-- desmotivado
-- equilibrado
-- ansioso
-- confiante
+REGRAS IMPORTANTES:
+1. O campo "tipo" deve ser **EXATAMENTE UMA destas palavras (em letras minúsculas e sem variações):**
+   - engajado
+   - motivado
+   - resiliente
+   - estressado
+   - burnout
+   - desmotivado
+   - equilibrado
+   - ansioso
+   - confiante
+2. NÃO escreva nada fora do JSON (sem introdução, sem explicação, sem markdown, sem texto adicional).
+3. NÃO escreva frases dentro do campo "tipo" — ele deve conter **somente uma das palavras acima**.
+4. Seja coerente e consistente com as respostas dadas.
 
 Respostas do questionário:
 - Nível de estresse: ${estresse}
@@ -86,7 +94,7 @@ Respostas do questionário:
 - Palavra: ${palavra}
 - Mudança: ${mudanca}
 
-Perfis possíveis (escolha o mais adequado para o campo "tipo"):
+Descrição dos tipos disponíveis:
 1. engajado: Alta motivação, energia positiva, sente-se útil e reconhecido
 2. motivado: Gosta do trabalho, mas sinais de excesso de demandas
 3. resiliente: Lida com pressões, mas precisa de apoio emocional
@@ -96,8 +104,6 @@ Perfis possíveis (escolha o mais adequado para o campo "tipo"):
 7. equilibrado: Nível saudável de estresse, boa organização
 8. ansioso: Expectativas elevadas, preocupação constante
 9. confiante: Boa autoeficácia, lida bem com pressões
-
-Retorne APENAS o JSON, sem markdown nem backticks.
 `
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })

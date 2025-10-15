@@ -5,10 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calendar, Users, FileText, Plus, Eye, Loader2, ClipboardList } from "lucide-react"
+import { Calendar, Users, FileText, Eye, Loader2, ClipboardList, Pencil } from "lucide-react"
 import { ReportsPieChart } from "./reports-pie-chart"
 import { AppointmentsGallery } from "./appointments-gallery"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export type ReportType =
     | "engajado"
@@ -32,6 +33,21 @@ interface Patient {
     employeeId?: number
 }
 
+interface Appointment {
+    id: number
+    date: string
+    startTime: string
+    endTime: string
+    status: string
+    notes: string | null
+    employee: {
+        user: {
+            name: string
+            email: string
+        }
+    }
+}
+
 interface ReportData {
     tipo: string
     quantidade: number
@@ -43,16 +59,6 @@ interface Stats {
     pacientesAtendidos: number
     reportData: ReportData[]
 }
-
-// Dados mockados de agendamentos (pode ser movido para API depois)
-const agendamentosMock = [
-    { id: 1, paciente: "Lewis Hamilton", data: "2025-10-06", horario: "09:00", tipo: "Primeira Consulta" },
-    { id: 2, paciente: "Carlos Sains", data: "2025-10-06", horario: "10:30", tipo: "Retorno" },
-    { id: 3, paciente: "Alexander Albon", data: "2025-10-07", horario: "14:00", tipo: "Retorno" },
-    { id: 4, paciente: "Max Verstappen", data: "2025-10-07", horario: "11:00", tipo: "Primeira Consulta" },
-    { id: 5, paciente: "Gabriel Bortoleto", data: "2025-10-08", horario: "13:30", tipo: "Retorno" },
-    { id: 6, paciente: "Charles Leclerc", data: "2025-10-09", horario: "09:30", tipo: "Retorno" },
-]
 
 const getReportBadgeVariant = (tipo: string) => {
     const variants: Record<
@@ -67,7 +73,7 @@ const getReportBadgeVariant = (tipo: string) => {
         desmotivado: { variant: "secondary" },
         equilibrado: { variant: "default", className: "bg-primary" },
         ansioso: { variant: "default", className: "bg-chart-5" },
-        confiante: { variant: "default", className: "bg-success" },
+        confiante: { variant: "default", className: "bg-green-600" },
         pendente: { variant: "outline" },
     }
     return variants[tipo] || { variant: "secondary" }
@@ -91,8 +97,7 @@ const getReportLabel = (tipo: string) => {
 
 export default function DashboardPsicologo() {
     const router = useRouter()
-
-    const [appointments, setAppointments] = useState(agendamentosMock)
+    const [appointments, setAppointments] = useState<Appointment[]>([])
     const [patients, setPatients] = useState<Patient[]>([])
     const [stats, setStats] = useState<Stats | null>(null)
     const [loading, setLoading] = useState(true)
@@ -113,6 +118,10 @@ export default function DashboardPsicologo() {
                 setPsychologistName(userData.user?.name || "Psicólogo")
             }
 
+            // Busca agendamentos
+            const appointmentsRes = await fetch("/api/appointments")
+            const appointmentsData = await appointmentsRes.json()
+
             // Busca pacientes
             const patientsRes = await fetch("/api/patients")
             const patientsData = await patientsRes.json()
@@ -120,6 +129,28 @@ export default function DashboardPsicologo() {
             // Busca estatísticas
             const statsRes = await fetch("/api/psychologist/stats")
             const statsData = await statsRes.json()
+
+            if (appointmentsData.success && appointmentsData.appointments) {
+                // Filtra apenas agendamentos desta semana (próximos 7 dias)
+                const now = new Date()
+                now.setHours(0, 0, 0, 0)
+
+                const sevenDaysFromNow = new Date(now)
+                sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
+
+                const thisWeekAppointments = appointmentsData.appointments.filter((apt: Appointment) => {
+                    const aptDate = new Date(apt.date)
+                    aptDate.setHours(0, 0, 0, 0)
+
+                    return (
+                        aptDate >= now &&
+                        aptDate < sevenDaysFromNow &&
+                        apt.status !== "CANCELLED"
+                    )
+                })
+
+                setAppointments(thisWeekAppointments)
+            }
 
             if (patientsData.success) {
                 setPatients(patientsData.patients)
@@ -136,10 +167,6 @@ export default function DashboardPsicologo() {
         }
     }
 
-    const handleAddConsulta = () => {
-        alert("Funcionalidade de agendamento em desenvolvimento")
-    }
-
     const handleViewConsulta = (id: number) => {
         console.log("Ver consulta:", id)
     }
@@ -149,11 +176,27 @@ export default function DashboardPsicologo() {
     }
 
     const handleDeleteConsulta = (id: number) => {
-        setAppointments(appointments.filter((a) => a.id !== id))
+        console.log("Cancelar consulta:", id)
     }
 
     const handleViewReports = (id: number) => {
         router.push(`/patients/${id}`)
+    }
+
+    // Formata appointments para o componente AppointmentsGallery
+    const formatAppointmentsForGallery = () => {
+        return appointments.map(apt => {
+            // Extrai apenas a data (YYYY-MM-DD) do DateTime
+            const dateOnly = apt.date.split("T")[0]
+
+            return {
+                id: apt.id,
+                paciente: apt.employee.user.name,
+                data: dateOnly,
+                horario: apt.startTime,
+                tipo: apt.notes ? "Retorno" : "Primeira Consulta"
+            }
+        })
     }
 
     if (loading) {
@@ -168,7 +211,6 @@ export default function DashboardPsicologo() {
     }
 
     const totalConsultas = appointments.length
-    const pacientesAtendidos = stats?.pacientesAtendidos || 0
     const totalRelatorios = stats?.totalRelatorios || 0
 
     const getGreeting = () => {
@@ -201,16 +243,12 @@ export default function DashboardPsicologo() {
                             <p className="text-muted-foreground mt-1">Consultas marcadas</p>
                         </div>
                         <div className="flex gap-2">
-                            <a href="/reports-psychologist">
-                                <Button variant="outline" size="sm">
-                                    <Eye className="h-4 w-4 mr-2" />
-                                    Ver Todas
+                            <Link href="/dash-psychologist/availability">
+                                <Button size="sm">
+                                    <Pencil className="h-4 w-4 mr-2" />
+                                    Configurar Disponibilidade
                                 </Button>
-                            </a>
-                            <Button size="sm" onClick={handleAddConsulta}>
-                                <Plus className="h-4 w-4 mr-2" />
-                                Adicionar
-                            </Button>
+                            </Link>
                         </div>
                     </div>
 
@@ -229,20 +267,40 @@ export default function DashboardPsicologo() {
                             <CardHeader className="pb-3">
                                 <div className="flex items-center gap-2">
                                     <Users className="h-5 w-5 text-primary" />
-                                    <CardDescription>Pacientes Atendidos</CardDescription>
+                                    <CardDescription>Pacientes Únicos</CardDescription>
                                 </div>
-                                <CardTitle className="text-4xl">{pacientesAtendidos}</CardTitle>
+                                <CardTitle className="text-4xl">
+                                    {new Set(appointments.map(apt => apt.employee.user.email)).size}
+                                </CardTitle>
                             </CardHeader>
                         </Card>
                     </div>
 
                     {/* Galeria de Agendamentos */}
-                    <AppointmentsGallery
-                        appointments={appointments}
-                        onView={handleViewConsulta}
-                        onEdit={handleEditConsulta}
-                        onDelete={handleDeleteConsulta}
-                    />
+                    {appointments.length > 0 ? (
+                        <AppointmentsGallery
+                            appointments={formatAppointmentsForGallery()}
+                            onView={handleViewConsulta}
+                            onEdit={handleEditConsulta}
+                            onDelete={handleDeleteConsulta}
+                        />
+                    ) : (
+                        <Card>
+                            <CardContent className="py-8 text-center">
+                                <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                                <h3 className="font-semibold mb-2">Nenhum agendamento esta semana</h3>
+                                <p className="text-muted-foreground mb-4">
+                                    Configure seus horários para que funcionários possam agendar consultas
+                                </p>
+                                <Link href="/dash-psychologist/availability">
+                                    <Button>
+                                        <Pencil className="h-4 w-4 mr-2" />
+                                        Configurar Disponibilidade
+                                    </Button>
+                                </Link>
+                            </CardContent>
+                        </Card>
+                    )}
                 </section>
 
                 {/* Seção de Relatórios */}
