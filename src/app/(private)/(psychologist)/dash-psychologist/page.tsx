@@ -1,15 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calendar, Users, FileText, Plus, Eye, Pencil, Trash2, ClipboardList } from "lucide-react"
+import { Calendar, Users, FileText, Plus, Eye, Loader2, ClipboardList } from "lucide-react"
 import { ReportsPieChart } from "./reports-pie-chart"
 import { AppointmentsGallery } from "./appointments-gallery"
+import { useRouter } from "next/navigation"
 
-// Tipos de relatórios
 export type ReportType =
     | "engajado"
     | "motivado"
@@ -20,9 +20,32 @@ export type ReportType =
     | "equilibrado"
     | "ansioso"
     | "confiante"
+    | "pendente"
 
-// Dados mockados para demonstração
-const agendamentos = [
+interface Patient {
+    id: number
+    nome: string
+    email: string
+    telefone?: string | null
+    resultado: string
+    hasQuestionario: boolean
+    employeeId?: number
+}
+
+interface ReportData {
+    tipo: string
+    quantidade: number
+    fill: string
+}
+
+interface Stats {
+    totalRelatorios: number
+    pacientesAtendidos: number
+    reportData: ReportData[]
+}
+
+// Dados mockados de agendamentos (pode ser movido para API depois)
+const agendamentosMock = [
     { id: 1, paciente: "Lewis Hamilton", data: "2025-10-06", horario: "09:00", tipo: "Primeira Consulta" },
     { id: 2, paciente: "Carlos Sains", data: "2025-10-06", horario: "10:30", tipo: "Retorno" },
     { id: 3, paciente: "Alexander Albon", data: "2025-10-07", horario: "14:00", tipo: "Retorno" },
@@ -31,50 +54,27 @@ const agendamentos = [
     { id: 6, paciente: "Charles Leclerc", data: "2025-10-09", horario: "09:30", tipo: "Retorno" },
 ]
 
-const pacientes = [
-    { id: 1, nome: "Lewis Hamilton", email: "lewislove.rascoe@email.com", resultado: "engajado" as ReportType },
-    { id: 2, nome: "Carlos Sains", email: "carlossains@email.com", resultado: "estressado" as ReportType },
-    { id: 3, nome: "Alexander Albon", email: "albon.tai@email.com", resultado: "equilibrado" as ReportType },
-    { id: 4, nome: "Max Verstappen", email: "tututudu.max.verstappen@email.com", resultado: "ansioso" as ReportType },
-    { id: 5, nome: "Gabriel Bortoleto", email: "omaiordahistoria@email.com", resultado: "motivado" as ReportType },
-    { id: 6, nome: "Charles Leclerc", email: "ihateferrari@email.com", resultado: "burnout" as ReportType },
-    { id: 7, nome: "Nico Hulkenberg", email: "i-got-my-first-podium-in-this-year@email.com", resultado: "resiliente" as ReportType },
-    { id: 8, nome: "Andrea Kimi Antonelli", email: "fratelli.d.ilatia@email.com", resultado: "confiante" as ReportType },
-    { id: 9, nome: "Flávio Henrique Perusin de Souza", email: "flavio.perusin@fiomental.com", resultado: "desmotivado" as ReportType },
-]
-
-const reportData = [
-    { tipo: "Engajado", quantidade: 12, fill: "var(--chart-1)" },
-    { tipo: "Motivado", quantidade: 8, fill: "var(--chart-2)" },
-    { tipo: "Resiliente", quantidade: 6, fill: "var(--chart-3)" },
-    { tipo: "Estressado", quantidade: 15, fill: "var(--chart-4)" },
-    { tipo: "Burnout", quantidade: 5, fill: "var(--destructive)" },
-    { tipo: "Desmotivado", quantidade: 7, fill: "var(--secondary-foreground)" },
-    { tipo: "Equilibrado", quantidade: 18, fill: "var(--primary)" },
-    { tipo: "Ansioso", quantidade: 11, fill: "var(--chart-5)" },
-    { tipo: "Confiante", quantidade: 9, fill: "hsl(142 76% 36%)" },
-]
-
-const getReportBadgeVariant = (tipo: ReportType) => {
+const getReportBadgeVariant = (tipo: string) => {
     const variants: Record<
-        ReportType,
+        string,
         { variant: "default" | "secondary" | "destructive" | "outline"; className?: string }
     > = {
         engajado: { variant: "default", className: "bg-chart-1" },
         motivado: { variant: "default", className: "bg-chart-2" },
         resiliente: { variant: "default", className: "bg-chart-3" },
         estressado: { variant: "default", className: "bg-chart-4" },
-        burnout: { variant: "destructive", className: "text-background dark:text-foreground" },
+        burnout: { variant: "destructive" },
         desmotivado: { variant: "secondary" },
         equilibrado: { variant: "default", className: "bg-primary" },
-        ansioso: { variant: "default", className: "var(--chart-5)" },
-        confiante: { variant: "default", className: "hsl(142 76% 36%)" },
+        ansioso: { variant: "default", className: "bg-chart-5" },
+        confiante: { variant: "default", className: "bg-success" },
+        pendente: { variant: "outline" },
     }
-    return variants[tipo]
+    return variants[tipo] || { variant: "secondary" }
 }
 
-const getReportLabel = (tipo: ReportType) => {
-    const labels: Record<ReportType, string> = {
+const getReportLabel = (tipo: string) => {
+    const labels: Record<string, string> = {
         engajado: "Engajado",
         motivado: "Motivado",
         resiliente: "Resiliente",
@@ -84,27 +84,68 @@ const getReportLabel = (tipo: ReportType) => {
         equilibrado: "Equilibrado",
         ansioso: "Ansioso",
         confiante: "Confiante/Autônomo",
+        pendente: "Pendente",
     }
-    return labels[tipo]
+    return labels[tipo] || tipo
 }
 
 export default function DashboardPsicologo() {
-    const [appointments, setAppointments] = useState(agendamentos)
+    const router = useRouter()
 
-    const totalConsultas = appointments.length
-    const pacientesAtendidos = new Set(appointments.map((a) => a.paciente)).size - 1
-    const totalRelatorios = reportData.reduce((acc, curr) => acc + curr.quantidade, 0)
+    const [appointments, setAppointments] = useState(agendamentosMock)
+    const [patients, setPatients] = useState<Patient[]>([])
+    const [stats, setStats] = useState<Stats | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [psychologistName, setPsychologistName] = useState("Psicólogo")
+
+    useEffect(() => {
+        loadData()
+    }, [])
+
+    const loadData = async () => {
+        try {
+            setLoading(true)
+
+            // Busca dados do usuário
+            const userRes = await fetch("/api/user")
+            if (userRes.ok) {
+                const userData = await userRes.json()
+                setPsychologistName(userData.user?.name || "Psicólogo")
+            }
+
+            // Busca pacientes
+            const patientsRes = await fetch("/api/patients")
+            const patientsData = await patientsRes.json()
+
+            // Busca estatísticas
+            const statsRes = await fetch("/api/psychologist/stats")
+            const statsData = await statsRes.json()
+
+            if (patientsData.success) {
+                setPatients(patientsData.patients)
+            }
+
+            if (statsData.success) {
+                setStats(statsData.stats)
+            }
+        } catch (err) {
+            console.error("Erro ao carregar dados:", err)
+            alert("Erro ao carregar dados do dashboard")
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleAddConsulta = () => {
-        console.log("[v0] Adicionar consulta")
+        alert("Funcionalidade de agendamento em desenvolvimento")
     }
 
     const handleViewConsulta = (id: number) => {
-        console.log("[v0] Ver consulta:", id)
+        console.log("Ver consulta:", id)
     }
 
     const handleEditConsulta = (id: number) => {
-        console.log("[v0] Editar consulta:", id)
+        console.log("Editar consulta:", id)
     }
 
     const handleDeleteConsulta = (id: number) => {
@@ -112,7 +153,29 @@ export default function DashboardPsicologo() {
     }
 
     const handleViewReports = (id: number) => {
-        console.log("[v0] Ver relatórios do paciente:", id)
+        router.push(`/patients/${id}`)
+    }
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+                    <p className="text-muted-foreground">Carregando dashboard...</p>
+                </div>
+            </div>
+        )
+    }
+
+    const totalConsultas = appointments.length
+    const pacientesAtendidos = stats?.pacientesAtendidos || 0
+    const totalRelatorios = stats?.totalRelatorios || 0
+
+    const getGreeting = () => {
+        const hour = new Date().getHours()
+        if (hour < 12) return "Bom dia"
+        if (hour < 18) return "Boa tarde"
+        return "Boa noite"
     }
 
     return (
@@ -121,7 +184,9 @@ export default function DashboardPsicologo() {
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground">Boa tarde, Naiane</h1>
+                        <h1 className="text-3xl font-bold text-foreground">
+                            {getGreeting()}, {psychologistName}
+                        </h1>
                         <p className="text-muted-foreground mt-1">Gerencie suas consultas e acompanhe seus pacientes</p>
                     </div>
                 </div>
@@ -133,11 +198,11 @@ export default function DashboardPsicologo() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-2xl font-bold text-foreground">Agendamentos desta Semana</h2>
-                            <p className="text-muted-foreground mt-1">Consultas marcadas de 13/01 a 19/01</p>
+                            <p className="text-muted-foreground mt-1">Consultas marcadas</p>
                         </div>
                         <div className="flex gap-2">
                             <a href="/reports-psychologist">
-                                <Button variant="outline" size="sm" onClick={() => handleViewConsulta(0)}>
+                                <Button variant="outline" size="sm">
                                     <Eye className="h-4 w-4 mr-2" />
                                     Ver Todas
                                 </Button>
@@ -201,49 +266,62 @@ export default function DashboardPsicologo() {
                     </div>
 
                     {/* Gráfico de Pizza dos Relatórios */}
-                    <div className="mb-6">
-                        <ReportsPieChart data={reportData} />
-                    </div>
+                    {stats?.reportData && (
+                        <div className="mb-6">
+                            <ReportsPieChart data={stats.reportData} />
+                        </div>
+                    )}
 
                     {/* Tabela de Pacientes */}
                     <Card>
                         <CardHeader>
                             <CardTitle>Pacientes</CardTitle>
-                            <CardDescription>Lista de pacientes e seus resultados mais recentes</CardDescription>
+                            <CardDescription>Lista de pacientes da empresa e seus resultados</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Nome</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Resultado</TableHead>
-                                        <TableHead className="text-right">Ações</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {pacientes.map((paciente) => {
-                                        const badgeConfig = getReportBadgeVariant(paciente.resultado)
-                                        return (
-                                            <TableRow key={paciente.id}>
-                                                <TableCell className="font-medium">{paciente.nome}</TableCell>
-                                                <TableCell className="text-muted-foreground">{paciente.email}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={badgeConfig.variant} className={badgeConfig.className}>
-                                                        {getReportLabel(paciente.resultado)}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="sm" onClick={() => handleViewReports(paciente.id)}>
-                                                        <ClipboardList className="h-4 w-4 mr-2" />
-                                                        Ver Relatórios
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
+                            {patients.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <p className="text-muted-foreground">Nenhum paciente encontrado</p>
+                                </div>
+                            ) : (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Nome</TableHead>
+                                            <TableHead>Email</TableHead>
+                                            <TableHead>Resultado</TableHead>
+                                            <TableHead className="text-right">Ações</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {patients.map((paciente) => {
+                                            const badgeConfig = getReportBadgeVariant(paciente.resultado)
+                                            return (
+                                                <TableRow key={paciente.id}>
+                                                    <TableCell className="font-medium">{paciente.nome}</TableCell>
+                                                    <TableCell className="text-muted-foreground">{paciente.email}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={badgeConfig.variant} className={badgeConfig.className}>
+                                                            {getReportLabel(paciente.resultado)}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => handleViewReports(paciente.id)}
+                                                            disabled={!paciente.hasQuestionario}
+                                                        >
+                                                            <ClipboardList className="h-4 w-4 mr-2" />
+                                                            Ver Relatórios
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            )}
                         </CardContent>
                     </Card>
                 </section>

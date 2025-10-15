@@ -1,29 +1,57 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { MultiStepForm } from "@/components/layout/multi-step"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { maskCPF, maskCRP, maskPhone } from "@/utils/mask"
+
+interface Company {
+    id: number
+    nome: string
+}
 
 export function PyschologistForm() {
     const [currentStep, setCurrentStep] = useState(1)
+    const [companies, setCompanies] = useState<Company[]>([])
+    const [loadingCompanies, setLoadingCompanies] = useState(true)
     const [formData, setFormData] = useState({
-        // Dados da empresa
+        // Dados do psicólogo
         nome: "",
         cpf: "",
         telefone: "",
         crp: "",
         tempoAtuacao: "",
         descricao: "",
+        companyId: "",
         // Login
         email: "",
         password: "",
         confirmPassword: "",
     })
     const router = useRouter()
+
+    useEffect(() => {
+        loadCompanies()
+    }, [])
+
+    const loadCompanies = async () => {
+        try {
+            const res = await fetch("/api/companies")
+            const data = await res.json()
+
+            if (data.success) {
+                setCompanies(data.companies)
+            }
+        } catch (err) {
+            console.error("Erro ao carregar empresas:", err)
+        } finally {
+            setLoadingCompanies(false)
+        }
+    }
 
     const handleNext = () => {
         setCurrentStep(currentStep + 1)
@@ -53,7 +81,7 @@ export function PyschologistForm() {
                 return
             }
 
-            router.push(data.redirectTo || "/dashboard")
+            router.push(data.redirectTo || "/dash-psychologist")
         } catch (err) {
             console.error(err)
             alert("Erro inesperado")
@@ -65,7 +93,9 @@ export function PyschologistForm() {
             return (
                 formData.nome.trim() !== "" &&
                 formData.cpf.trim() !== "" &&
-                formData.telefone.trim() !== ""
+                formData.telefone.trim() !== "" &&
+                formData.crp.trim() !== "" &&
+                formData.companyId.trim() !== ""
             )
         }
         if (currentStep === 2) {
@@ -123,19 +153,39 @@ export function PyschologistForm() {
                                 value={formData.crp}
                                 onChange={(e) => setFormData({ ...formData, crp: maskCRP(e.target.value) })}
                                 placeholder="XX/XXXXX"
+                                required
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="tempoAtuacao">Tempo de atuação</Label>
+                            <Label htmlFor="tempoAtuacao">Tempo de atuação (anos)</Label>
                             <Input
                                 id="tempoAtuacao"
+                                type="number"
                                 value={formData.tempoAtuacao}
                                 onChange={(e) => setFormData({ ...formData, tempoAtuacao: e.target.value })}
-                                placeholder="Ex: 1 ano, 2-5 anos, 10+ anos"
+                                placeholder="Ex: 5"
                             />
                         </div>
 
+                        <div className="space-y-2">
+                            <Label htmlFor="companyId">Empresa</Label>
+                            <Select
+                                value={formData.companyId}
+                                onValueChange={(value) => setFormData({ ...formData, companyId: value })}
+                            >
+                                <SelectTrigger id="companyId">
+                                    <SelectValue placeholder={loadingCompanies ? "Carregando..." : "Selecione a empresa"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {companies.map((company) => (
+                                        <SelectItem key={company.id} value={company.id.toString()}>
+                                            {company.nome}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="descricao">Descrição</Label>
@@ -154,13 +204,13 @@ export function PyschologistForm() {
                 return (
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">E-mail Corporativo</Label>
+                            <Label htmlFor="email">E-mail</Label>
                             <Input
                                 id="email"
                                 type="email"
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                placeholder="contato@empresa.com"
+                                placeholder="seu.email@exemplo.com"
                                 required
                             />
                         </div>

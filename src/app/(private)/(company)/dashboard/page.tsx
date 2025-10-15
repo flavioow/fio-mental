@@ -34,6 +34,7 @@ export default function DashboardEmpresa() {
     const [stats, setStats] = useState<DashboardStats | null>(null)
     const [loading, setLoading] = useState(true)
     const [removing, setRemoving] = useState<number | null>(null)
+    const [companyName, setCompanyName] = useState("Empresa")
 
     useEffect(() => {
         loadData()
@@ -42,6 +43,13 @@ export default function DashboardEmpresa() {
     const loadData = async () => {
         try {
             setLoading(true)
+
+            // Busca dados do usuário
+            const userRes = await fetch("/api/user")
+            if (userRes.ok) {
+                const userData = await userRes.json()
+                setCompanyName(userData.user?.name || "Empresa")
+            }
 
             // Busca colaboradores
             const employeesRes = await fetch("/api/employees")
@@ -118,6 +126,13 @@ export default function DashboardEmpresa() {
     const colaboradoresConcluidos = stats?.completedEmployees || 0
     const percentualConclusao = stats?.completionRate || 0
 
+    const getGreeting = () => {
+        const hour = new Date().getHours()
+        if (hour < 12) return "Bom dia"
+        if (hour < 18) return "Boa tarde"
+        return "Boa noite"
+    }
+
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
@@ -125,7 +140,7 @@ export default function DashboardEmpresa() {
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+                            <h1 className="text-3xl font-bold text-foreground">{getGreeting()}, {companyName}</h1>
                             <p className="text-muted-foreground mt-1">Gerencie seus colaboradores e acompanhe o progresso</p>
                         </div>
                         <Link href="/register/employee">

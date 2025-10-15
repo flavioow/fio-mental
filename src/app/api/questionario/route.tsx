@@ -47,10 +47,22 @@ export async function POST(req: Request) {
         const prompt = `
 Gere um perfil psicológico resumido (entre 5 a 7 linhas) do funcionário em JSON com campos:
 {
+  "tipo": "engajado",
   "perfilPrincipal": "...",
   "diagnostico": "...",
   "recomendacoes": ["...", "..."]
 }
+
+IMPORTANTE: O campo "tipo" deve ser EXATAMENTE uma dessas opções (em minúsculo):
+- engajado
+- motivado
+- resiliente
+- estressado
+- burnout
+- desmotivado
+- equilibrado
+- ansioso
+- confiante
 
 Respostas do questionário:
 - Nível de estresse: ${estresse}
@@ -74,21 +86,50 @@ Respostas do questionário:
 - Palavra: ${palavra}
 - Mudança: ${mudanca}
 
-Perfis possíveis:
-1. Engajado: Alta motivação, energia positiva, sente-se útil e reconhecido
-2. Motivado, mas sobrecarregado: Gosta do trabalho, mas sinais de excesso de demandas
-3. Resiliente em construção: Lida com pressões, mas precisa de apoio emocional
-4. Estressado: Tensão frequente, dificuldade em relaxar
-5. Burnout: Fadiga intensa, queda de motivação, exaustão
-6. Desmotivado/Desengajado: Baixa energia, pouca conexão emocional
-7. Equilibrado: Nível saudável de estresse, boa organização
-8. Ansioso no trabalho: Expectativas elevadas, preocupação constante
-9. Confiante/Autônomo: Boa autoeficácia, lida bem com pressões
+Perfis possíveis (escolha o mais adequado para o campo "tipo"):
+1. engajado: Alta motivação, energia positiva, sente-se útil e reconhecido
+2. motivado: Gosta do trabalho, mas sinais de excesso de demandas
+3. resiliente: Lida com pressões, mas precisa de apoio emocional
+4. estressado: Tensão frequente, dificuldade em relaxar
+5. burnout: Fadiga intensa, queda de motivação, exaustão
+6. desmotivado: Baixa energia, pouca conexão emocional
+7. equilibrado: Nível saudável de estresse, boa organização
+8. ansioso: Expectativas elevadas, preocupação constante
+9. confiante: Boa autoeficácia, lida bem com pressões
+
+Retorne APENAS o JSON, sem markdown nem backticks.
 `
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
         const result = await model.generateContent(prompt)
-        const perfilGerado = result?.response?.text() || "Erro ao gerar perfil"
+        let perfilGeradoBruto = result?.response?.text() || "{}"
+
+        // LIMPA os backticks e markdown
+        perfilGeradoBruto = perfilGeradoBruto.replace(/```json\s*|```/g, "").trim()
+
+        // Valida se é um JSON válido
+        let perfilJSON: any = {}
+        try {
+            perfilJSON = JSON.parse(perfilGeradoBruto)
+        } catch (err) {
+            console.error("Erro ao parsear JSON da Gemini:", perfilGeradoBruto)
+            // Fallback: cria um objeto básico
+            perfilJSON = {
+                tipo: "equilibrado",
+                perfilPrincipal: "Perfil não identificado",
+                diagnostico: perfilGeradoBruto,
+                recomendacoes: []
+            }
+        }
+
+        // Garante que o campo "tipo" existe e está em minúsculo
+        if (!perfilJSON.tipo) {
+            perfilJSON.tipo = "equilibrado"
+        }
+        perfilJSON.tipo = perfilJSON.tipo.toLowerCase()
+
+        // Converte de volta para string JSON limpo
+        const perfilLimpo = JSON.stringify(perfilJSON)
 
         // Salva no banco
         const questionario = await prisma.questionario.upsert({
@@ -114,7 +155,7 @@ Perfis possíveis:
                 confianca,
                 palavra,
                 mudanca,
-                perfilPsicologico: perfilGerado,
+                perfilPsicologico: perfilLimpo, // Salva o JSON limpo
             },
             create: {
                 employeeId: employee.id,
@@ -138,11 +179,15 @@ Perfis possíveis:
                 confianca,
                 palavra,
                 mudanca,
-                perfilPsicologico: perfilGerado,
+                perfilPsicologico: perfilLimpo, // Salva o JSON limpo
             },
         })
 
-        return NextResponse.json({ success: true, perfil: perfilGerado, questionarioId: questionario.id })
+        return NextResponse.json({
+            success: true,
+            perfil: perfilLimpo,
+            questionarioId: questionario.id
+        })
     } catch (err) {
         console.error("Erro ao salvar questionário:", err)
         return NextResponse.json({ error: "Erro ao processar questionário" }, { status: 500 })
