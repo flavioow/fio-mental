@@ -6,10 +6,10 @@ import { RoleSection } from "./role-section"
 export default function Index() {
     return (
         <main className="content-grid">
-            <section id="home" className="content-full-width !my-0 min-h-[75dvh] grid place-items-center bg-[url('https://i.pinimg.com/originals/9b/bf/ab/9bbfab096b84885d5493dac9a8691897.gif')] bg-bottom bg-cover bg-no-repeat bg-fixed relative">
+            <section id="home" className="content-full-width !my-0 min-h-[75dvh] grid place-items-center bg-[url('https://i.postimg.cc/nzt5w3yY/Composi-o-1-1.gif')] bg-bottom bg-cover bg-no-repeat bg-fixed relative">
 
                 {/* Blur */}
-                <div className="content-full-width absolute inset-0 bg-foreground/50 backdrop-blur-sm -z-0 h-full"></div>
+                <div className="content-full-width absolute inset-0 bg-primary/50 backdrop-blur-sm -z-0 h-full"></div>
 
                 <div className="z-0">
                     <p className="font-medium text-center mb-6 text-secondary">Prazer, bem vindo ao</p>
