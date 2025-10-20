@@ -1,11 +1,19 @@
 "use client"
 
+import type React from "react"
+
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Brain, Target, Users, TrendingUp, ChevronRight, ChevronLeft } from "lucide-react"
 
 export default function RefazerQuestionario() {
     const router = useRouter()
+    const [currentStep, setCurrentStep] = useState(0)
     const [form, setForm] = useState({
         estresse: "",
         motivoEstresse: "",
@@ -37,11 +45,11 @@ export default function RefazerQuestionario() {
         e.preventDefault()
 
         try {
-            const perfilPsico = { ...form } // encapsula todos os campos do form
+            const perfilPsico = { ...form }
             const res = await fetch("/api/questionario", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form), // <-- aqui!
+                body: JSON.stringify(form),
             })
 
             const data = await res.json()
@@ -58,102 +66,272 @@ export default function RefazerQuestionario() {
         }
     }
 
+    const sections = [
+        {
+            title: "Saúde Mental e Bem-Estar",
+            icon: Brain,
+            color: "text-blue-500",
+            questions: [
+                {
+                    name: "estresse",
+                    label: "Como você avaliaria seu nível atual de estresse no trabalho de 1 a 10?",
+                    type: "number",
+                    min: 1,
+                    max: 10,
+                },
+                {
+                    name: "motivoEstresse",
+                    label: "O que mais costuma gerar estresse ou ansiedade no seu dia a dia profissional?",
+                    type: "textarea",
+                },
+                {
+                    name: "equilibrio",
+                    label: "Você sente que consegue equilibrar bem trabalho e vida pessoal?",
+                    type: "textarea",
+                },
+                {
+                    name: "reacaoProblema",
+                    label: "Quando enfrenta um problema no trabalho, qual costuma ser sua primeira reação?",
+                    type: "textarea",
+                },
+                {
+                    name: "espacoBemEstar",
+                    label: "Você sente que tem espaço para falar sobre seu bem-estar com colegas ou líderes?",
+                    type: "textarea",
+                },
+            ],
+        },
+        {
+            title: "Motivação e Produtividade",
+            icon: Target,
+            color: "text-green-500",
+            questions: [
+                { name: "motivacao", label: "O que mais te motiva a dar o seu melhor no trabalho?", type: "textarea" },
+                { name: "desmotivacao", label: "O que mais desmotiva ou atrapalha sua produtividade?", type: "textarea" },
+                {
+                    name: "melhorHorario",
+                    label: "Em quais momentos do dia você sente que trabalha melhor (manhã, tarde, noite)?",
+                    type: "textarea",
+                },
+                {
+                    name: "foco",
+                    label: "Você se considera mais focado em tarefas individuais ou colaborativas?",
+                    type: "textarea",
+                },
+                {
+                    name: "satisfacao",
+                    label: "O que poderia aumentar sua satisfação e motivação no ambiente de trabalho?",
+                    type: "textarea",
+                },
+            ],
+        },
+        {
+            title: "Relacionamento e Trabalho em Equipe",
+            icon: Users,
+            color: "text-purple-500",
+            questions: [
+                { name: "pedirAjuda", label: "Você se sente confortável em pedir ajuda quando precisa?", type: "textarea" },
+                { name: "conflitos", label: "Como você lida com conflitos ou divergências no time?", type: "textarea" },
+                {
+                    name: "ouvido",
+                    label: "O quanto você sente que é ouvido e respeitado nas reuniões ou discussões de equipe?",
+                    type: "textarea",
+                },
+                {
+                    name: "tipoColega",
+                    label: "Qual é o tipo de colega ou líder que mais te ajuda a render melhor?",
+                    type: "textarea",
+                },
+                {
+                    name: "ambiente",
+                    label: "Você prefere ambientes mais calmos e estruturados ou dinâmicos e cheios de interações?",
+                    type: "textarea",
+                },
+            ],
+        },
+        {
+            title: "Desenvolvimento e Futuro",
+            icon: TrendingUp,
+            color: "text-orange-500",
+            questions: [
+                {
+                    name: "habilidades",
+                    label: "Quais habilidades você gostaria de desenvolver nos próximos meses?",
+                    type: "textarea",
+                },
+                {
+                    name: "oportunidades",
+                    label: "Você sente que tem oportunidades reais de crescimento dentro da empresa?",
+                    type: "textarea",
+                },
+                {
+                    name: "confianca",
+                    label: "O que faria você se sentir mais confiante para assumir novas responsabilidades?",
+                    type: "textarea",
+                },
+                {
+                    name: "palavra",
+                    label: "Em uma palavra, como você definiria sua relação atual com o trabalho?",
+                    type: "text",
+                },
+                {
+                    name: "mudanca",
+                    label: "Se pudesse mudar uma coisa na empresa para melhorar o bem-estar dos colaboradores, o que seria?",
+                    type: "textarea",
+                },
+            ],
+        },
+    ]
+
+    const currentSection = sections[currentStep]
+    const Icon = currentSection.icon
+    const progress = ((currentStep + 1) / sections.length) * 100
+
+    const nextStep = () => {
+        if (currentStep < sections.length - 1) {
+            setCurrentStep(currentStep + 1)
+        }
+    }
+
+    const prevStep = () => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1)
+        }
+    }
+
+    const isLastStep = currentStep === sections.length - 1
+
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start p-8 bg-background text-foreground">
-            <div className="w-full max-w-xl bg-card rounded-lg shadow p-8 mb-4">
-                <h2 className="text-2xl font-bold mb-6 text-center">Saúde Mental e Bem-Estar</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label className="font-semibold">Como você avaliaria seu nível atual de estresse no trabalho de 1 a 10?</label>
-                        <input name="estresse" type="number" min={1} max={10} className="mt-2 w-full border rounded px-3 py-2" required value={form.estresse} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">O que mais costuma gerar estresse ou ansiedade no seu dia a dia profissional?</label>
-                        <textarea name="motivoEstresse" className="mt-2 w-full border rounded px-3 py-2" required value={form.motivoEstresse} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Você sente que consegue equilibrar bem trabalho e vida pessoal?</label>
-                        <textarea name="equilibrio" className="mt-2 w-full border rounded px-3 py-2" required value={form.equilibrio} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Quando enfrenta um problema no trabalho, qual costuma ser sua primeira reação?</label>
-                        <textarea name="reacaoProblema" className="mt-2 w-full border rounded px-3 py-2" required value={form.reacaoProblema} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Você sente que tem espaço para falar sobre seu bem-estar com colegas ou líderes?</label>
-                        <textarea name="espacoBemEstar" className="mt-2 w-full border rounded px-3 py-2" required value={form.espacoBemEstar} onChange={handleChange} />
-                    </div>
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 py-12 px-4">
+            <div className="max-w-3xl mx-auto">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Questionário de Bem-Estar</h1>
+                    <p className="text-muted-foreground text-lg">Ajude-nos a entender melhor suas necessidades profissionais</p>
+                </div>
 
-                    <h2 className="text-2xl font-bold mt-8 mb-6 text-center">Motivação e Produtividade</h2>
-                    <div>
-                        <label className="font-semibold">O que mais te motiva a dar o seu melhor no trabalho?</label>
-                        <textarea name="motivacao" className="mt-2 w-full border rounded px-3 py-2" required value={form.motivacao} onChange={handleChange} />
+                {/* Progress Bar */}
+                <div className="mb-8">
+                    <div className="flex justify-between items-center mb-3">
+                        {sections.map((section, index) => {
+                            const SectionIcon = section.icon
+                            return (
+                                <div key={index} className="flex flex-col items-center gap-2">
+                                    <div
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${index <= currentStep ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                                            }`}
+                                    >
+                                        <SectionIcon className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-xs text-muted-foreground hidden md:block max-w-[80px] text-center leading-tight">
+                                        {section.title.split(" ")[0]}
+                                    </span>
+                                </div>
+                            )
+                        })}
                     </div>
-                    <div>
-                        <label className="font-semibold">O que mais desmotiva ou atrapalha sua produtividade?</label>
-                        <textarea name="desmotivacao" className="mt-2 w-full border rounded px-3 py-2" required value={form.desmotivacao} onChange={handleChange} />
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-primary transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
                     </div>
-                    <div>
-                        <label className="font-semibold">Em quais momentos do dia você sente que trabalha melhor (manhã, tarde, noite)?</label>
-                        <textarea name="melhorHorario" className="mt-2 w-full border rounded px-3 py-2" required value={form.melhorHorario} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Você se considera mais focado em tarefas individuais ou colaborativas?</label>
-                        <textarea name="foco" className="mt-2 w-full border rounded px-3 py-2" required value={form.foco} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">O que poderia aumentar sua satisfação e motivação no ambiente de trabalho?</label>
-                        <textarea name="satisfacao" className="mt-2 w-full border rounded px-3 py-2" required value={form.satisfacao} onChange={handleChange} />
-                    </div>
+                </div>
 
-                    <h2 className="text-2xl font-bold mt-8 mb-6 text-center">Relacionamento e Trabalho em Equipe</h2>
-                    <div>
-                        <label className="font-semibold">Você se sente confortável em pedir ajuda quando precisa?</label>
-                        <textarea name="pedirAjuda" className="mt-2 w-full border rounded px-3 py-2" required value={form.pedirAjuda} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Como você lida com conflitos ou divergências no time?</label>
-                        <textarea name="conflitos" className="mt-2 w-full border rounded px-3 py-2" required value={form.conflitos} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">O quanto você sente que é ouvido e respeitado nas reuniões ou discussões de equipe?</label>
-                        <textarea name="ouvido" className="mt-2 w-full border rounded px-3 py-2" required value={form.ouvido} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Qual é o tipo de colega ou líder que mais te ajuda a render melhor?</label>
-                        <textarea name="tipoColega" className="mt-2 w-full border rounded px-3 py-2" required value={form.tipoColega} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Você prefere ambientes mais calmos e estruturados ou dinâmicos e cheios de interações?</label>
-                        <textarea name="ambiente" className="mt-2 w-full border rounded px-3 py-2" required value={form.ambiente} onChange={handleChange} />
-                    </div>
+                {/* Form Card */}
+                <Card className="p-8 md:p-10 shadow-lg border-2">
+                    <form onSubmit={handleSubmit}>
+                        {/* Section Header */}
+                        <div className="flex items-center gap-4 mb-8 pb-6 border-b">
+                            <div
+                                className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center ${currentSection.color}`}
+                            >
+                                <Icon className="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-bold text-foreground">{currentSection.title}</h2>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    Seção {currentStep + 1} de {sections.length}
+                                </p>
+                            </div>
+                        </div>
 
-                    <h2 className="text-2xl font-bold mt-8 mb-6 text-center">Desenvolvimento e Futuro</h2>
-                    <div>
-                        <label className="font-semibold">Quais habilidades você gostaria de desenvolver nos próximos meses?</label>
-                        <textarea name="habilidades" className="mt-2 w-full border rounded px-3 py-2" required value={form.habilidades} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Você sente que tem oportunidades reais de crescimento dentro da empresa?</label>
-                        <textarea name="oportunidades" className="mt-2 w-full border rounded px-3 py-2" required value={form.oportunidades} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">O que faria você se sentir mais confiante para assumir novas responsabilidades?</label>
-                        <textarea name="confianca" className="mt-2 w-full border rounded px-3 py-2" required value={form.confianca} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Em uma palavra, como você definiria sua relação atual com o trabalho?</label>
-                        <input name="palavra" type="text" className="mt-2 w-full border rounded px-3 py-2" required value={form.palavra} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label className="font-semibold">Se pudesse mudar uma coisa na empresa para melhorar o bem-estar dos colaboradores, o que seria?</label>
-                        <textarea name="mudanca" className="mt-2 w-full border rounded px-3 py-2" required value={form.mudanca} onChange={handleChange} />
-                    </div>
+                        {/* Questions */}
+                        <div className="space-y-8">
+                            {currentSection.questions.map((question, index) => (
+                                <div key={question.name} className="space-y-3">
+                                    <Label htmlFor={question.name} className="text-base font-semibold text-foreground leading-relaxed">
+                                        {index + 1}. {question.label}
+                                    </Label>
+                                    {question.type === "textarea" ? (
+                                        <Textarea
+                                            id={question.name}
+                                            name={question.name}
+                                            value={form[question.name as keyof typeof form]}
+                                            onChange={handleChange}
+                                            required
+                                            rows={4}
+                                            className="resize-none text-base"
+                                            placeholder="Digite sua resposta aqui..."
+                                        />
+                                    ) : question.type === "number" ? (
+                                        <Input
+                                            id={question.name}
+                                            name={question.name}
+                                            type="number"
+                                            min={question.min}
+                                            max={question.max}
+                                            value={form[question.name as keyof typeof form]}
+                                            onChange={handleChange}
+                                            required
+                                            className="text-base"
+                                            placeholder="1-10"
+                                        />
+                                    ) : (
+                                        <Input
+                                            id={question.name}
+                                            name={question.name}
+                                            type="text"
+                                            value={form[question.name as keyof typeof form]}
+                                            onChange={handleChange}
+                                            required
+                                            className="text-base"
+                                            placeholder="Digite sua resposta..."
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
 
-                    <div className="flex justify-center mt-8">
-                        <Button type="submit" className="bg-primary text-primary-foreground px-8 py-2">Enviar Respostas</Button>
-                    </div>
-                </form>
+                        {/* Navigation Buttons */}
+                        <div className="flex justify-between items-center mt-10 pt-8 border-t">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={prevStep}
+                                disabled={currentStep === 0}
+                                className="gap-2 bg-transparent"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                                Anterior
+                            </Button>
+
+                            {isLastStep ? (
+                                <Button type="submit" className="gap-2 px-8">
+                                    Enviar Respostas
+                                    <ChevronRight className="w-4 h-4" />
+                                </Button>
+                            ) : (
+                                <Button type="button" onClick={nextStep} className="gap-2">
+                                    Próxima
+                                    <ChevronRight className="w-4 h-4" />
+                                </Button>
+                            )}
+                        </div>
+                    </form>
+                </Card>
+
+                {/* Footer Info */}
+                <p className="text-center text-sm text-muted-foreground mt-6">
+                    Suas respostas são confidenciais e serão usadas apenas para melhorar sua experiência
+                </p>
             </div>
         </div>
     )
