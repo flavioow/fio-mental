@@ -1,0 +1,9 @@
+node_modules
+dist
+.next
+.prisma
+.env
+.env.local
+.git
+Dockerfile
+docker-compose.yml
