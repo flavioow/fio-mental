@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Inter, Josefin_Sans } from "next/font/google"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import "./layout.css"
 
@@ -52,6 +53,7 @@ export default function RootLayout({
     return (
         <html lang="pt-br">
             <body className={`${josefin.variable} ${inter.className}`}>
+                <SpeedInsights />
                 {children}
             </body>
         </html>
