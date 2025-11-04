@@ -7,7 +7,7 @@
 
 **Mental FIO** é um espaço pensado para promover **bem-estar e cuidado emocional de forma acessível**.
 Através da plataforma, colaboradores podem conversar com um **psicólogo virtual** e receber **relatórios personalizados**,
-empresas podem oferecer **benefícios de saúde mental aos seus times**, e psicólogos têm a chance de **impactar mais vidas** com seu trabalho.
+empresas podem oferecer **benefícios de saúde mental aos seus times**, e psicólogos têm a chance de **impactar mais vidas** com seu trabalho. [Veja o nosso site!](https://fio-mental.vercel.app/)
 
 > Nosso objetivo é facilitar o acesso à escuta, ao apoio e ao autoconhecimento, tudo em um só lugar.
 

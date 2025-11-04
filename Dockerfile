@@ -13,14 +13,17 @@ RUN npm install --legacy-peer-deps
 # Etapa 5: copia tudo pro container
 COPY . .
 
-# Etapa 6: gera o Prisma Client
+# Etapa 6: copia também o .env
+COPY .env .env
+
+# Etapa 7: gera o Prisma Client
 RUN npx prisma generate
 
-# Etapa 7: build do Next.js (opcional se quiser rodar direto em dev)
+# Etapa 8: build do Next.js (opcional se quiser rodar direto em dev)
 RUN npm run build
 
-# Etapa 8: expõe a porta do servidor
+# Etapa 9: expõe a porta do servidor
 EXPOSE 3000
 
-# Etapa 9: comando pra rodar o app
+# Etapa 10: comando pra rodar o app
 CMD ["npm", "run", "start"]
