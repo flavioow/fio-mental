@@ -13,7 +13,7 @@ export default function Index() {
 
                 <div className="z-0">
                     <p className="font-medium text-center mb-6 text-secondary">Prazer, bem vindo ao</p>
-                    <h1 className="font-josefin font-bold text-6xl text-center mb-2 text-primary-foreground">FIO Mental</h1>
+                    <h1 className="font-josefin font-bold text-6xl text-center mb-2 text-primary-foreground">NEO Mental</h1>
                     <p className="text-center text-balance text-xl max-w-[600px] mb-12 text-primary-foreground">Um espaço pensado para promover bem-estar e cuidado emocional de forma acessível. Conectamos colaboradores, psicólogos e empresas em uma plataforma única.</p>
 
                     <div className="flex flex-col lg:flex-row gap-4 justify-center items-center">

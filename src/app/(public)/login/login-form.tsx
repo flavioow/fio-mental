@@ -53,7 +53,7 @@ export function LoginForm() {
         <Card className="w-full">
             <CardHeader className="text-center">
                 <CardTitle className="text-2xl">Entrar</CardTitle>
-                <p className="text-muted-foreground">Acesse sua conta no FIO Mental</p>
+                <p className="text-muted-foreground">Acesse sua conta no NEO Mental</p>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">

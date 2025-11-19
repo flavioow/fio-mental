@@ -9,7 +9,7 @@ const josefin = Josefin_Sans({ subsets: ["latin"], variable: "--font-josefin" })
 
 
 export const metadata: Metadata = {
-    title: "Fio Mental",
+    title: "Neo Mental",
     description: "Conecta pessoas, empresas e psicólogos em um ambiente seguro e acessível para cuidar da saúde mental",
     authors: [
         { name: "Flávio Henrique Perusin de Souza", url: "https://flavioow.vercel.app/" },
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
             sizes: "180x180",
         },
     ],
-    appleWebApp: { capable: true, title: "Fio Mental", statusBarStyle: "default" },
+    appleWebApp: { capable: true, title: "Neo Mental", statusBarStyle: "default" },
 }
 
 export default function RootLayout({

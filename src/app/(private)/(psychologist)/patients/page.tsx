@@ -11,7 +11,7 @@ const pacientes = [
     {
         id: 1,
         nome: "Kevin Simões de Souza Lima",
-        email: "kevin.simoes@fiomental.com",
+        email: "kevin.simoes@neomental.com",
         resultado: "Alegre",
         status: "completed",
     },

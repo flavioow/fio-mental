@@ -27,8 +27,8 @@ const cards = [
 export function AboutSection() {
     return (
         <section id="about">
-            <h2 className="font-josefin font-bold text-3xl text-center mb-2">Sobre o FIO Mental</h2>
-            <p className="md:text-justify md:indent-8 text-foreground/75">O Mental FIO é um espaço pensado para promover bem-estar e cuidado emocional de forma acessível. Através da nossa plataforma, colaboradores podem conversar com um psicólogo virtual e receber relatórios personalizados, empresas podem oferecer benefícios de saúde mental aos seus times, e psicólogos têm a chance de impactar mais vidas com seu trabalho. Nosso objetivo é facilitar o acesso à escuta, ao apoio e ao autoconhecimento — tudo em um só lugar.</p>
+            <h2 className="font-josefin font-bold text-3xl text-center mb-2">Sobre o NEO Mental</h2>
+            <p className="md:text-justify md:indent-8 text-foreground/75">O Mental NEO é um espaço pensado para promover bem-estar e cuidado emocional de forma acessível. Através da nossa plataforma, colaboradores podem conversar com um psicólogo virtual e receber relatórios personalizados, empresas podem oferecer benefícios de saúde mental aos seus times, e psicólogos têm a chance de impactar mais vidas com seu trabalho. Nosso objetivo é facilitar o acesso à escuta, ao apoio e ao autoconhecimento — tudo em um só lugar.</p>
 
             <div className="my-6 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 mb-16">
                 {cards.map((card, index) => (

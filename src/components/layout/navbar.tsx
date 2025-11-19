@@ -6,7 +6,7 @@ export function Navbar() {
         <header className="w-full fixed top-0 z-50 flex justify-center items-center">
             <div className="flex gap-4 justify-center items-center w-fit bg-background/50 backdrop-blur-md px-2 my-4 rounded-md">
                 <a href="/">
-                    <Image src="/assets/fiohomem.png" alt="Fio" width="42" height="42" />
+                    <Image src="/assets/fiohomem.png" alt="Neo" width="42" height="42" />
                 </a>
                 <nav>
                     <ul className="flex gap-2">
